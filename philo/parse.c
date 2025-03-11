@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "philo.h"
+#include "philo.h"
 
 static int	ft_atoi(char *str)
 {
@@ -39,7 +39,7 @@ static int	ft_atoi(char *str)
 	return (res * sign);
 }
 
-void	fill_args(char **av)
+static void	fill_args(char **av)
 {
 	t_philo	all_arg;
 
@@ -65,6 +65,7 @@ void	fill_args(char **av)
 		all_arg.eating_times = ft_atoi(av[5]);
 		printf("eating_times: %d\n", all_arg.eating_times);
 	}
+	philo_handler(&all_arg);
 }
 
 int	main(int ac, char **av)
