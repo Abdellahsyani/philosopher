@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+# include "philo.h"
 
 static int	ft_atoi(char *str)
 {
@@ -39,6 +39,33 @@ static int	ft_atoi(char *str)
 	return (res * sign);
 }
 
+void	fill_args(char **av)
+{
+	t_philo	all_arg;
+
+	all_arg.philo_num = 0;
+	all_arg.time_to_die = 0;
+	all_arg.time_to_eat = 0;
+	all_arg.time_to_sleep = 0;
+	if (av[4])
+	{
+		all_arg.philo_num = ft_atoi(av[1]);
+		all_arg.time_to_die = ft_atoi(av[2]);
+		all_arg.time_to_eat = ft_atoi(av[3]);
+		all_arg.time_to_sleep = ft_atoi(av[4]);
+	}
+	else
+		printf("Error: You must enter at least 4 args\n");
+	printf("philo_num: %d\n", all_arg.philo_num);
+	printf("time_to_die: %d\n", all_arg.time_to_die);
+	printf("time_to_eat: %d\n", all_arg.time_to_eat);
+	printf("time_to_sleep: %d\n", all_arg.time_to_sleep);
+	if (av[5])
+	{
+		all_arg.eating_times = ft_atoi(av[5]);
+		printf("eating_times: %d\n", all_arg.eating_times);
+	}
+}
 
 int	main(int ac, char **av)
 {
@@ -47,7 +74,10 @@ int	main(int ac, char **av)
 	int	num;
 
 	if (ac > 6)
+	{
+		printf("Error: Enter just 5 arguments\n");
 		return (1);
+	}
 	i = 1;
 	while (av[i])
 	{
@@ -56,14 +86,13 @@ int	main(int ac, char **av)
 		{
 			if (!(av[i][j] >= '0' && av[i][j] <= '9'))
 			{
-				printf("Error:\n");
+				printf("Error: some of args contain non integer\n");
 				return (1);
 			}
 			j++;
 		}
-		num = ft_atoi(av[i]);
 		i++;
 	}
-	printf("%d ", num);
+	fill_args(av);
 	return (0);
 }

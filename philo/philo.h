@@ -10,8 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# ifndef PHILO_H
-#define PHILO_H
+#ifndef PHILO_H
+# define PHILO_H
+
+typedef struct s_philo
+{
+	int	philo_num;
+	int	time_to_die;
+	int	time_to_eat;
+	int	time_to_sleep;
+	int	eating_times;
+} t_philo;
 
 # include <stdio.h>
 # include <pthread.h>
