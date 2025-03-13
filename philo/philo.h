@@ -13,6 +13,11 @@
 #ifndef PHILO_H
 # define PHILO_H
 
+
+# include <stdio.h>
+# include <pthread.h>
+# include <stdlib.h>
+
 typedef struct s_philo
 {
 	int	philo_num;
@@ -22,7 +27,7 @@ typedef struct s_philo
 	int	eating_times;
 } t_philo;
 
-# include <stdio.h>
-# include <pthread.h>
+void	philo_handler(t_philo *philo);
+void	*thread_routine(void *arg);
 
 #endif
