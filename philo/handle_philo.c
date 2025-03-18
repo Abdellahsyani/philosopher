@@ -14,24 +14,37 @@
 
 void	*thread_routine(void *arg)
 {
-	(void)arg;
-	printf("start a thread\n");
+	int	*i;
+	pthread_mutex_t	*mutex;
 
+	pthread_mutex_init(&mutex, NULL);
+	i = (int *)arg;
+
+	printf("start a thread......[%d]\n", *i);
 	return (NULL);
 }
 
 void	philo_handler(t_philo *philo)
 {
 	int	i;
+	int	*ids;
 	pthread_t	*thread_id;
 
 	i = 0;
-	thread_id = malloc(sizeof(pthread_t));
-	if (!thread_id)
+	thread_id = malloc(sizeof(pthread_t) * philo->philo_num);
+	ids = malloc(sizeof(int) * philo->philo_num);
+	if (!thread_id || !ids)
 		return ;
 	while (i <= philo->philo_num)
 	{
-		pthread_create(&thread_id[i], NULL, thread_routine, NULL);
+		ids[i] = i + 1;
+		pthread_create(&thread_id[i], NULL, thread_routine, &ids[i]);
+		i++;
+	}
+	i = 0;
+	while (i < philo->philo_num)
+	{
+		pthread_join(thread_id[i], NULL);
 		i++;
 	}
 }
