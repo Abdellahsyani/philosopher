@@ -14,31 +14,35 @@
 
 void	*thread_routine(void *arg)
 {
-	int	*i;
-	pthread_mutex_t	*mutex;
+	t_data	*thread;
+	
+	thread = (t_data *)arg;
 
-	pthread_mutex_init(&mutex, NULL);
-	i = (int *)arg;
-
-	printf("start a thread......[%d]\n", *i);
+	pthread_mutex_lock(thread->mutex);
+	printf("start a thread......[%d]\n", thread->id);
+	pthread_mutex_unlock(thread->mutex);
+	printf("thread [%d] has finished\n", thread->id);
 	return (NULL);
 }
 
 void	philo_handler(t_philo *philo)
 {
 	int	i;
-	int	*ids;
 	pthread_t	*thread_id;
+	t_data	*thread_mutex;
+	pthread_mutex_t	mutex;
 
 	i = 0;
+	pthread_mutex_init(&mutex, NULL);
 	thread_id = malloc(sizeof(pthread_t) * philo->philo_num);
-	ids = malloc(sizeof(int) * philo->philo_num);
-	if (!thread_id || !ids)
+	thread_mutex = malloc(sizeof(t_data) * philo->philo_num);
+	if (!thread_id || !thread_mutex)
 		return ;
-	while (i <= philo->philo_num)
+	while (i < philo->philo_num)
 	{
-		ids[i] = i + 1;
-		pthread_create(&thread_id[i], NULL, thread_routine, &ids[i]);
+		thread_mutex[i].id = i + 1;
+		thread_mutex[i].mutex = &mutex;
+		pthread_create(&thread_id[i], NULL, thread_routine, &thread_mutex[i]);
 		i++;
 	}
 	i = 0;
@@ -47,4 +51,7 @@ void	philo_handler(t_philo *philo)
 		pthread_join(thread_id[i], NULL);
 		i++;
 	}
+	pthread_mutex_destroy(&mutex);
+	free(thread_id);
+	free(thread_mutex);
 }

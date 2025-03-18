@@ -28,6 +28,12 @@ typedef struct s_philo
 	int	eating_times;
 } t_philo;
 
+typedef struct s_data
+{
+	int	id;
+	pthread_mutex_t	*mutex;
+} t_data;
+
 void	philo_handler(t_philo *philo);
 void	*thread_routine(void *arg);
 
