@@ -72,30 +72,35 @@ void	*thread_routine(void *arg)
 	thread = (t_data *)arg;
 
 	add_to_list(&philo, thread->id);
-	/*for (int i = 0; i < 1; i++)*/
+	/*while (philo)*/
 	/*{*/
 	/*	printf("\"%d %d %d %d %d\"-->", philo->philo_id, philo->time_to_die, philo->time_to_eat, philo->time_to_sleep, philo->eating_times);*/
+	/*	philo = philo->next;*/
 	/*}*/
 	while (1)
 	{
 		pthread_mutex_lock(thread->mutex);
-		if (philo->philo_id)
+		while (philo)
 		{
-			//start counting the time
-			gettimeofday(&start_time, NULL);
-			printf("%ld %d has taken a fork\n",  (start_time.tv_sec * 1000) ,philo->philo_id);
-			philo->num_of_forks++;
+			if (philo->philo_id)
+			{
+				//start counting the time
+				gettimeofday(&start_time, NULL);
+				printf("%ld %d has taken a fork\n", start_time.tv_sec ,philo->philo_id);
+				philo->num_of_forks++;
+			}
+			if (philo->num_of_forks == 2)
+			{
+				//update the meal time
+				gettimeofday(&start_time, NULL);
+				printf("%ld %d is eating\n", start_time.tv_sec ,philo->philo_id);
+				usleep(thread->philo.time_to_eat * 1000);
+			}
+			/*printf("%d %d is sleeping\n", kj, thread->id);*/
+			/*printf("%d %d is thinking\n", kj, thread->id);*/
+			/*printf("%d %d is died\n", kj, thread->id);*/
+			philo = philo->next;
 		}
-		if (philo->num_of_forks == 2)
-		{
-			//update the meal time
-			gettimeofday(&start_time, NULL);
-			printf("%ld %d is eating\n", (start_time.tv_sec * 1000) ,philo->philo_id);
-			usleep(thread->philo.time_to_eat * 1000);
-		}
-		/*printf("%d %d is sleeping\n", kj, thread->id);*/
-		/*printf("%d %d is thinking\n", kj, thread->id);*/
-		/*printf("%d %d is died\n", kj, thread->id);*/
 		pthread_mutex_unlock(thread->mutex);
 	}
 	return (NULL);
