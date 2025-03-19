@@ -18,23 +18,38 @@
 # include <pthread.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <sys/time.h>
+
 
 typedef struct s_philo
+{
+	int	philo_id;
+	int	time_to_die;
+	int	time_to_eat;
+	int	time_to_sleep;
+	int	eating_times;
+	int	num_of_forks;
+	struct s_philo *next;
+	struct	timeval	last_meal;
+} t_philo;
+
+typedef struct s_head
 {
 	int	philo_num;
 	int	time_to_die;
 	int	time_to_eat;
 	int	time_to_sleep;
 	int	eating_times;
-} t_philo;
+} t_head;
 
 typedef struct s_data
 {
 	int	id;
 	pthread_mutex_t	*mutex;
+	t_head	philo;
 } t_data;
 
-void	philo_handler(t_philo *philo);
+void	philo_handler(t_head *philo);
 void	*thread_routine(void *arg);
 
 #endif

@@ -41,7 +41,7 @@ static int	ft_atoi(char *str)
 
 static void	fill_args(char **av)
 {
-	t_philo	all_arg;
+	t_head	all_arg;
 
 	all_arg.philo_num = 0;
 	all_arg.time_to_die = 0;

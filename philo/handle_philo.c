@@ -12,20 +12,96 @@
 
 #include "philo.h"
 
+/**
+ * create_node _ function to create the node
+ * @id: the data that node will take
+ */
+t_philo	*create_node(int id)
+{
+	t_philo	*new_node;
+
+	new_node = malloc(sizeof(t_philo));
+	if (!new_node)
+		return (NULL);
+	new_node->philo_id = id;
+	new_node->next = NULL;
+	new_node->time_to_die = 0;
+	new_node->time_to_eat = 0;
+	new_node->time_to_sleep = 0;
+	new_node->eating_times = 0;
+	new_node->num_of_forks = 0;
+	return (new_node);
+}
+
+/**
+ * add_to_stack _ function to add nodes to stack
+ * @list: the philo list
+ * @data: the philo id
+ */
+void	add_to_list(t_philo **list, int data)
+{
+	t_philo	*new_node;
+	t_philo	*temp;
+
+	new_node = create_node(data);
+	if (!new_node)
+	{
+		/*free_stack(stack);*/
+		return ;
+	}
+	if (!*list)
+	{
+		*list = new_node;
+		return ;
+	}
+	temp = *list;
+	while (temp->next)
+	{
+		temp = temp->next;
+	}
+	temp->next = new_node;
+}
+
 void	*thread_routine(void *arg)
 {
 	t_data	*thread;
-	
+	struct timeval	start_time;
+	t_philo	*philo;
+
+	philo = NULL;
 	thread = (t_data *)arg;
 
-	pthread_mutex_lock(thread->mutex);
-	printf("start a thread......[%d]\n", thread->id);
-	pthread_mutex_unlock(thread->mutex);
-	printf("thread [%d] has finished\n", thread->id);
+	add_to_list(&philo, thread->id);
+	/*for (int i = 0; i < 1; i++)*/
+	/*{*/
+	/*	printf("\"%d %d %d %d %d\"-->", philo->philo_id, philo->time_to_die, philo->time_to_eat, philo->time_to_sleep, philo->eating_times);*/
+	/*}*/
+	while (1)
+	{
+		pthread_mutex_lock(thread->mutex);
+		if (philo->philo_id)
+		{
+			//start counting the time
+			gettimeofday(&start_time, NULL);
+			printf("%ld %d has taken a fork\n",  (start_time.tv_sec * 1000) ,philo->philo_id);
+			philo->num_of_forks++;
+		}
+		if (philo->num_of_forks == 2)
+		{
+			//update the meal time
+			gettimeofday(&start_time, NULL);
+			printf("%ld %d is eating\n", (start_time.tv_sec * 1000) ,philo->philo_id);
+			usleep(thread->philo.time_to_eat * 1000);
+		}
+		/*printf("%d %d is sleeping\n", kj, thread->id);*/
+		/*printf("%d %d is thinking\n", kj, thread->id);*/
+		/*printf("%d %d is died\n", kj, thread->id);*/
+		pthread_mutex_unlock(thread->mutex);
+	}
 	return (NULL);
 }
 
-void	philo_handler(t_philo *philo)
+void	philo_handler(t_head *philo)
 {
 	int	i;
 	pthread_t	*thread_id;
