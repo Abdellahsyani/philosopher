@@ -83,16 +83,21 @@ void	*thread_routine(void *arg)
 	/*}*/
 	long elapsed;
 	gettimeofday(&start_time, NULL);
+	thread->philo.philo_list->last_meal = start_time;
 	while (1)
 	{
-		if (thread->philo.philo_list->philo_id > 0)
+		pthread_mutex_lock(thread->mutex);
+		if (*(thread->died_flag) == 1)
 		{
-			//start counting the time
-			gettimeofday(&current_time, NULL);
-			long elapsed_time = (current_time.tv_sec - start_time.tv_sec) * 1000 + (current_time.tv_usec - start_time.tv_usec) / 1000;
-			printf("%ld %d has taken a fork\n", elapsed_time,thread->philo.philo_list->philo_id);
-			thread->philo.philo_list->num_of_forks++;
+			pthread_mutex_unlock(thread->mutex);
+			break;
 		}
+		pthread_mutex_unlock(thread->mutex);
+		//start counting the time
+		gettimeofday(&current_time, NULL);
+		long elapsed_time = (current_time.tv_sec - start_time.tv_sec) * 1000 + (current_time.tv_usec - start_time.tv_usec) / 1000;
+		printf("%ld %d has taken a fork\n", elapsed_time,thread->philo.philo_list->philo_id);
+		thread->philo.philo_list->num_of_forks++;
 		if (thread->philo.philo_list->num_of_forks == 2)
 		{
 			//update the meal time
@@ -107,12 +112,17 @@ void	*thread_routine(void *arg)
 			printf("%ld %d is sleeping\n", elapsed_time, thread->philo.philo_list->philo_id);
 			usleep(thread->fi_info.time_to_sleep * 1000);
 		}
-		if (elapsed > thread->philo.philo_list->time_to_die)
+		gettimeofday(&current_time, NULL);
+		long elapsed_tim = (current_time.tv_sec - start_time.tv_sec) * 1000 + (current_time.tv_usec - start_time.tv_usec) / 1000;
+		if (elapsed_tim > thread->philo.philo_list->time_to_die)
 		{
-			gettimeofday(&current_time, NULL);
-			long died = (current_time.tv_sec - start_time.tv_sec) * 1000 + (current_time.tv_usec - start_time.tv_usec) / 1000;
-			printf("%ld %d is died\n", died,thread->philo.philo_list->philo_id);
-			exit(1);
+			/*gettimeofday(&current_time, NULL);*/
+			/*long died = (current_time.tv_sec - start_time.tv_sec) * 1000 + (current_time.tv_usec - start_time.tv_usec) / 1000;*/
+			printf("%ld %d is died\n", elapsed_tim,thread->philo.philo_list->philo_id);
+			pthread_mutex_lock(thread->mutex);
+			*(thread->died_flag) = 1;
+			pthread_mutex_unlock(thread->mutex);
+			break;
 		}
 	}
 	/*printf("%d %d is thinking\n", kj, thread->id);*/
@@ -126,6 +136,7 @@ void	philo_handler(t_head *philo)
 	pthread_t	*thread_id;
 	t_data	*thread_mutex;
 	pthread_mutex_t	mutex;
+	int	died_flag = 0;
 
 
 	i = 0;
@@ -138,6 +149,7 @@ void	philo_handler(t_head *philo)
 	{
 		thread_mutex[i].id = i + 1;
 		thread_mutex[i].mutex = &mutex;
+		thread_mutex[i].died_flag = &died_flag;
 		add_to_list(&thread_mutex[i].philo.philo_list, thread_mutex[i].id);
 		pthread_create(&thread_id[i], NULL, thread_routine, &thread_mutex[i]);
 		i++;

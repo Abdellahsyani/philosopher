@@ -48,6 +48,7 @@ typedef struct s_data
 	int	id;
 	pthread_mutex_t	*mutex;
 	t_philo	philo;
+	int	*died_flag;
 	t_head	fi_info;
 } t_data;
 
