@@ -30,6 +30,7 @@ typedef struct s_philo
 	int	eating_times;
 	int	num_of_forks;
 	struct s_philo *next;
+	struct s_philo	*philo_list;
 	struct	timeval	last_meal;
 } t_philo;
 
@@ -46,7 +47,8 @@ typedef struct s_data
 {
 	int	id;
 	pthread_mutex_t	*mutex;
-	t_head	philo;
+	t_philo	philo;
+	t_head	fi_info;
 } t_data;
 
 void	philo_handler(t_head *philo);
