@@ -113,12 +113,12 @@ void	*thread_routine(void *arg)
 			usleep(thread->fi_info.time_to_sleep * 1000);
 		}
 		gettimeofday(&current_time, NULL);
-		long elapsed_tim = (current_time.tv_sec - start_time.tv_sec) * 1000 + (current_time.tv_usec - start_time.tv_usec) / 1000;
-		if (elapsed_tim > thread->philo.philo_list->time_to_die)
+		long time_since_last_meal = (current_time.tv_sec - thread->philo.philo_list->last_meal.tv_sec) * 1000 + (current_time.tv_usec - thread->philo.philo_list->last_meal.tv_usec) / 1000;
+		if (time_since_last_meal > thread->philo.philo_list->time_to_die)
 		{
-			/*gettimeofday(&current_time, NULL);*/
-			/*long died = (current_time.tv_sec - start_time.tv_sec) * 1000 + (current_time.tv_usec - start_time.tv_usec) / 1000;*/
-			printf("%ld %d is died\n", elapsed_tim,thread->philo.philo_list->philo_id);
+			gettimeofday(&current_time, NULL);
+			long died = (current_time.tv_sec - start_time.tv_sec) * 1000 + (current_time.tv_usec - start_time.tv_usec) / 1000;
+			printf("%ld %d is died\n", died,thread->philo.philo_list->philo_id);
 			pthread_mutex_lock(thread->mutex);
 			*(thread->died_flag) = 1;
 			pthread_mutex_unlock(thread->mutex);
