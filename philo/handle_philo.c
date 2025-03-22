@@ -6,13 +6,13 @@
 /*   By: asyani <asyani@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 16:33:11 by asyani            #+#    #+#             */
-/*   Updated: 2025/03/22 10:10:51 by asyani           ###   ########.fr       */
+/*   Updated: 2025/03/22 10:30:03 by asyani           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	get_time(void)
+int	get_time_ms(void)
 {
 	struct timeval	time;
 
@@ -20,12 +20,15 @@ int	get_time(void)
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
 
-int	take_right_fork(int philo_id)
+int	take_right_fork(t_data *thread)
 {
-	int	left_fork;
-	int	right_fork;
+	int	time;
 
-	if ()
+	time = get_time_ms();
+	pthread_mutex_lock(thread->left_fork);
+	printf("%d %d has taken a fork\n", time, thread->philo.philo_list->philo_id);
+	if (
+	
 }
 
 void	take_left_fork(int philo_id)
@@ -54,7 +57,6 @@ void	*thread_routine(void *arg)
 		// Start counting the time
 		gettimeofday(&current_time, NULL);
 		time = get_time();
-		printf("%d %d has taken a fork\n", time, thread->philo.philo_list->philo_id);
 		pthread_mutex_lock(thread->mutex); 
 		thread->philo.philo_list->num_of_forks++;
 		pthread_mutex_unlock(thread->mutex); 

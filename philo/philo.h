@@ -48,6 +48,8 @@ typedef struct s_head
 typedef struct s_data
 {
 	int	id;
+	int	left_fork;
+	int	right_fork;
 	pthread_mutex_t	*mutex;
 	t_philo	philo;
 	t_head	*fi_info;
