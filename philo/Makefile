@@ -3,7 +3,7 @@ NAME = philo
 SRC = parse.c handle_philo.c
 
 CC = cc
-CFLAG = -Wall -Wextra -Werror
+CFLAG = -Wall -Wextra -Werror -fsanitize=thread
 
 OBJ = $(SRC:.c=.o)
 

@@ -6,7 +6,7 @@
 /*   By: asyani <asyani@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/09 13:48:32 by asyani            #+#    #+#             */
-/*   Updated: 2025/03/09 13:50:15 by asyani           ###   ########.fr       */
+/*   Updated: 2025/03/22 09:51:20 by asyani           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ typedef struct s_head
 	int	time_to_eat;
 	int	time_to_sleep;
 	int	eating_times;
+	int	died_flag;
+	pthread_mutex_t	*died_mutex;
 } t_head;
 
 typedef struct s_data
@@ -48,11 +50,12 @@ typedef struct s_data
 	int	id;
 	pthread_mutex_t	*mutex;
 	t_philo	philo;
-	int	*died_flag;
-	t_head	fi_info;
+	t_head	*fi_info;
 } t_data;
 
 void	philo_handler(t_head *philo);
 void	*thread_routine(void *arg);
+void	add_to_list(t_philo **list, int data);
+t_philo	*create_node(int id);
 
 #endif
