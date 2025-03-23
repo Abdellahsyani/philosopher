@@ -28,7 +28,6 @@ typedef struct s_philo
 	int	time_to_eat;
 	int	time_to_sleep;
 	int	eating_times;
-	int	num_of_forks;
 	struct s_philo *next;
 	struct s_philo	*philo_list;
 	struct	timeval	last_meal;
@@ -48,8 +47,8 @@ typedef struct s_head
 typedef struct s_data
 {
 	int	id;
-	int	left_fork;
-	int	right_fork;
+	pthread_mutex_t	*left_fork;
+	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	*mutex;
 	t_philo	philo;
 	t_head	*fi_info;
