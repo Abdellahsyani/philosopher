@@ -31,12 +31,20 @@ int get_time_ms(t_data *thread)
 void philosopher_eat(t_data *thread)
 {
 	int	time;
+	int	last_meal;
 
 	time = get_time_ms(thread);
 	pthread_mutex_lock(thread->mutex);
 	printf("%d %d is eating\n", time, thread->philo.philo_list->philo_id);
 	pthread_mutex_unlock(thread->mutex);
+	last_meal = get_time_ms(thread);
 	usleep(thread->fi_info->time_to_sleep * 1000);
+	if (last_meal > thread->fi_info->time_to_die)
+	{
+		time = get_time_ms(thread);
+		printf("%d %d is died\n", time, thread->philo.philo_list->philo_id);
+		exit(1);
+	}
 }
 
 void philosopher_sleep(t_data *thread)
