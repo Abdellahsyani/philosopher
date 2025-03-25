@@ -12,13 +12,6 @@
 
 #include "philo.h"
 
-/*long	get_time_ms(void)*/
-/*{*/
-/*	struct timeval	time;*/
-/**/
-/*	gettimeofday(&time, NULL);*/
-/*	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));*/
-/*}*/
 
 int get_time_ms(t_data *thread)
 {
@@ -106,6 +99,8 @@ void	*thread_routine(void *arg)
 	thread = (t_data *)arg;
 	while (1)
 	{
+		if (thread->philo.philo_list->philo_id % 2 == 0)
+			usleep(1000);
 		take_forks(thread);
 		philosopher_sleep(thread);
 		/*phlosopher_thinking(thread);*/
