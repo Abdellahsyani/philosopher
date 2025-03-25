@@ -29,7 +29,6 @@ t_philo	*create_node(int id)
 	new_node->time_to_eat = 0;
 	new_node->time_to_sleep = 0;
 	new_node->eating_times = 0;
-	new_node->num_of_forks = 0;
 	return (new_node);
 }
 

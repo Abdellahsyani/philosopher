@@ -12,13 +12,61 @@
 
 #include "philo.h"
 
-int	get_time_ms(void)
+/*long	get_time_ms(void)*/
+/*{*/
+/*	struct timeval	time;*/
+/**/
+/*	gettimeofday(&time, NULL);*/
+/*	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));*/
+/*}*/
+
+int get_time_ms(t_data *thread)
 {
-	struct timeval	time;
+	static int start_time;
+	struct timeval time;
+	int	current_time;
 
 	gettimeofday(&time, NULL);
-	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
+	current_time = (time.tv_sec * 1000) + (time.tv_usec / 1000);
+	pthread_mutex_lock(thread->mutex);
+	if (start_time == 0)
+		start_time = current_time;
+	pthread_mutex_unlock(thread->mutex);
+	return current_time - start_time;
 }
+
+void philosopher_eat(t_data *thread)
+{
+	int	time;
+
+	time = get_time_ms(thread);
+	pthread_mutex_lock(thread->mutex);
+	printf("%d %d is eating\n", time, thread->philo.philo_list->philo_id);
+	pthread_mutex_unlock(thread->mutex);
+	usleep(thread->fi_info->time_to_sleep * 1000);
+}
+
+void philosopher_sleep(t_data *thread)
+{
+	int	time;
+
+	time = get_time_ms(thread);
+	pthread_mutex_lock(thread->mutex);
+	printf("%d %d is sleeping\n", time, thread->philo.philo_list->philo_id);
+	pthread_mutex_unlock(thread->mutex);
+	usleep(thread->fi_info->time_to_sleep * 1000);
+}
+
+/*void philosopher_thinking(t_data *thread)*/
+/*{*/
+/*	int	time;*/
+/**/
+/*	time = get_time_ms();*/
+/*	pthread_mutex_lock(thread->mutex);*/
+/*	printf("%d %d is thinking\n", time, thread->philo.philo_list->philo_id);*/
+/*	pthread_mutex_unlock(thread->mutex);*/
+/*	usleep(thread->fi_info->time_);*/
+/*}*/
 
 void take_forks(t_data *thread)
 {
@@ -28,7 +76,7 @@ void take_forks(t_data *thread)
 
 	left_id = thread->philo.philo_list->philo_id - 1;
 	right_id = thread->philo.philo_list->philo_id % thread->fi_info->philo_num;
-	time = get_time_ms();
+	time = get_time_ms(thread);
 	if (left_id < right_id)
 	{
 		pthread_mutex_lock(thread->left_fork);
@@ -37,7 +85,7 @@ void take_forks(t_data *thread)
 		printf("%d %d has taken a fork\n", time, thread->philo.philo_list->philo_id);
 	}
 	else
-	{
+{
 		pthread_mutex_lock(thread->right_fork);
 		printf("%d %d has taken a fork\n", time, thread->philo.philo_list->philo_id);
 		pthread_mutex_lock(thread->left_fork);
@@ -48,23 +96,21 @@ void take_forks(t_data *thread)
 	pthread_mutex_unlock(thread->right_fork);
 }
 
+
 void	*thread_routine(void *arg)
 {
 	t_data	*thread;
-	struct timeval	start_time;
-	struct timeval	current_time;
-	int	time;
+	/*struct timeval	start_time;*/
+	/*struct timeval	current_time;*/
 
 	thread = (t_data *)arg;
-	gettimeofday(&start_time, NULL);
 	while (1)
 	{
 		take_forks(thread);
 		philosopher_sleep(thread);
-		phlosopher_thinking(thread);
+		/*phlosopher_thinking(thread);*/
 
 	}
-
 	return (NULL);
 }
 
@@ -73,13 +119,13 @@ void	philo_handler(t_head *philo)
 	int i;
 	pthread_t *thread_id;
 	t_data *thread_mutex;
-	pthread_mutex_t table_mutex;
+	pthread_mutex_t mutex;
 
 	i = 0;
-	pthread_mutex_init(&table_mutex, NULL);
+	pthread_mutex_init(&mutex, NULL);
 
 	thread_id = malloc(sizeof(pthread_t) * philo->philo_num);
-	thread_mutex = malloc(sizeof(t_data) * philo->philo_num);
+	thread_mutex = malloc(sizeof(	t_data) * philo->philo_num);
 
 	pthread_mutex_t *forks = malloc(sizeof(pthread_mutex_t) * philo->philo_num);
 
@@ -92,7 +138,7 @@ void	philo_handler(t_head *philo)
 	while (i < philo->philo_num)
 	{
 		thread_mutex[i].id = i + 1;
-		thread_mutex[i].mutex = &table_mutex;
+		thread_mutex[i].mutex = &mutex;
 		thread_mutex[i].fi_info = philo;
 
 		thread_mutex[i].left_fork = &forks[i];
