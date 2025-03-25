@@ -47,6 +47,7 @@ static void	fill_args(char **av)
 	all_arg.time_to_die = 0;
 	all_arg.time_to_eat = 0;
 	all_arg.time_to_sleep = 0;
+	all_arg.eating_times = 0;
 	if (av[4])
 	{
 		all_arg.philo_num = ft_atoi(av[1]);
