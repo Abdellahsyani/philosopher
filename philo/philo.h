@@ -41,17 +41,18 @@ typedef struct s_head
 	int	time_to_sleep;
 	int	eating_times;
 	int	died_flag;
+	int	id;
+	int	last_meal;
+	t_philo	philo;
+	pthread_mutex_t	*mutex;
 	pthread_mutex_t	died_mutex;
+	pthread_mutex_t *thread_mutex;
 } t_head;
 
 typedef struct s_data
 {
-	int	id;
-	int	last_meal;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
-	pthread_mutex_t	*mutex;
-	t_philo	philo;
 	t_head	*fi_info;
 } t_data;
 
