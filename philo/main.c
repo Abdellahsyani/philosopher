@@ -6,7 +6,7 @@
 /*   By: asyani <asyani@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 12:05:26 by asyani            #+#    #+#             */
-/*   Updated: 2025/03/29 15:17:06 by asyani           ###   ########.fr       */
+/*   Updated: 2025/03/29 15:34:37 by asyani           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int init_table(t_table *table, int argc, char **argv)
 
 	if (argc < 5 || argc > 6)
 	{
-		fprintf(stderr, "Usage: %s number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]\n", argv[0]);
+		printf("Usage: %s number_of_philosophers time_to_die time_to_eat time_to_sleep\n");
 		return 0;
 	}
 	table->num_philosophers = atoi(argv[1]);
@@ -29,7 +29,7 @@ int init_table(t_table *table, int argc, char **argv)
 	if (table->num_philosophers <= 0 || table->time_to_die < 0 || 
 		table->time_to_eat < 0 || table->time_to_sleep < 0)
 	{
-		fprintf(stderr, "Invalid input parameters\n");
+		printf("Invalid input parameters\n");
 		return 0;
 	}
 	table->philosophers = malloc(sizeof(t_philosopher) * table->num_philosophers);
@@ -37,7 +37,7 @@ int init_table(t_table *table, int argc, char **argv)
 	table->forks = malloc(sizeof(pthread_mutex_t) * table->num_philosophers);
 	if (!table->philosophers || !table->philosopher_threads || !table->forks)
 	{
-		fprintf(stderr, "Memory allocation failed\n");
+		printf("Memory allocation failed\n");
 		return 0;
 	}
 	pthread_mutex_init(&table->print_mutex, NULL);
@@ -97,7 +97,7 @@ int main(int argc, char **argv)
 		if (pthread_create(&table.philosopher_threads[i], NULL, 
 		     philosopher_routine, &table.philosophers[i]) != 0)
 		{
-			fprintf(stderr, "Failed to create philosopher thread\n");
+			printf("Failed to create philosopher thread\n");
 			return 1;
 		}
 		i++;
@@ -105,7 +105,7 @@ int main(int argc, char **argv)
 	if (pthread_create(&table.monitor_thread, NULL, 
 		    monitor_routine, &table) != 0)
 	{
-		fprintf(stderr, "Failed to create monitor thread\n");
+		printf("Failed to create monitor thread\n");
 		return 1;
 	}
 	i = 0;
