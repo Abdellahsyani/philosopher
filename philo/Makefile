@@ -3,7 +3,7 @@ NAME = philo
 SRC = main.c handle_philo.c utils_philo.c
 
 CC = cc
-CFLAG = -Wall -Wextra -Werror -fsanitize=address 
+CFLAG = -Wall -Wextra -Werror -fsanitize=thread 
 
 OBJ = $(SRC:.c=.o)
 
