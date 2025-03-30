@@ -6,16 +6,42 @@
 /*   By: asyani <asyani@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 12:05:26 by asyani            #+#    #+#             */
-/*   Updated: 2025/03/30 12:22:22 by asyani           ###   ########.fr       */
+/*   Updated: 2025/03/30 13:55:46 by asyani           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int init_table(t_table *table, int argc, char **argv)
+static void	support_init(t_table *table)
 {
 	int	i;
 
+	pthread_mutex_init(&table->print_mutex, NULL);
+	pthread_mutex_init(&table->death_mutex, NULL);
+	i = 0;
+	while (i < table->num_philosophers)
+	{
+		pthread_mutex_init(&table->forks[i], NULL);
+		pthread_mutex_init(&table->philosophers[i].times_eaten_mutex, NULL);
+		i++;
+	}
+	i = 0;
+	while (i < table->num_philosophers)
+	{
+		table->philosophers[i].id = i + 1;
+		table->philosophers[i].times_eaten = 0;
+		table->philosophers[i].last_meal_time = get_current_time();
+		table->philosophers[i].table = table;
+		table->philosophers[i].left_fork = &table->forks[i];
+		table->philosophers[i].right_fork = &table->forks[(i + 1) % table->num_philosophers];
+		i++;
+	}
+	table->simulation_stop = false;
+	table->start_time = get_current_time();
+}
+
+int	init_table(t_table *table, int argc, char **argv)
+{
 	if (argc < 5 || argc > 6)
 	{
 		printf("Usage: number_of_philos time_to_die time_to_eat time_to_sleep must_eaten\n");
@@ -41,28 +67,7 @@ int init_table(t_table *table, int argc, char **argv)
 		printf("Memory allocation failed\n");
 		return 0;
 	}
-	pthread_mutex_init(&table->print_mutex, NULL);
-	pthread_mutex_init(&table->death_mutex, NULL);
-	i = 0;
-	while (i < table->num_philosophers)
-	{
-		pthread_mutex_init(&table->forks[i], NULL);
-		pthread_mutex_init(&table->philosophers[i].times_eaten_mutex, NULL);
-		i++;
-	}
-	i = 0;
-	while (i < table->num_philosophers)
-	{
-		table->philosophers[i].id = i + 1;
-		table->philosophers[i].times_eaten = 0;
-		table->philosophers[i].last_meal_time = get_current_time();
-		table->philosophers[i].table = table;
-		table->philosophers[i].left_fork = &table->forks[i];
-		table->philosophers[i].right_fork = &table->forks[(i + 1) % table->num_philosophers];
-		i++;
-	}
-	table->simulation_stop = false;
-	table->start_time = get_current_time();
+	support_init(table);
 	return (1);
 }
 
@@ -102,6 +107,7 @@ int	main(int argc, char **argv)
 		if (pthread_create(&table.philosopher_threads[i], NULL, 
 		     philosopher_routine, &table.philosophers[i]) != 0)
 			thread_fail();
+		usleep(100);
 		i++;
 	}
 	if (pthread_create(&table.monitor_thread, NULL, 
@@ -115,5 +121,5 @@ int	main(int argc, char **argv)
 	}
 	pthread_join(table.monitor_thread, NULL);
 	cleanup_table(&table);
-	return 0;
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: asyani <asyani@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 16:33:11 by asyani            #+#    #+#             */
-/*   Updated: 2025/03/29 15:35:32 by asyani           ###   ########.fr       */
+/*   Updated: 2025/03/30 13:49:23 by asyani           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	take_forks(t_philosopher *philo)
 		print_status(philo->table, philo->id, "has taken a fork");
 	}
 	else
-	{
+{
 		pthread_mutex_lock(philo->left_fork);
 		print_status(philo->table, philo->id, "has taken a fork");
 		pthread_mutex_lock(philo->right_fork);
@@ -83,6 +83,37 @@ void	*philosopher_routine(void *arg)
 	return (NULL);
 }
 
+void	*handle_must_eaten_time(t_table *table)
+{
+	int	i;
+
+	i = 0;
+	if (table->must_eat_count > 0)
+	{
+		bool all_satisfied = true;
+		while (i < table->num_philosophers)
+		{
+			pthread_mutex_lock(&table->philosophers[i].times_eaten_mutex);
+			if (table->philosophers[i].times_eaten < table->must_eat_count)
+			{
+				pthread_mutex_unlock(&table->philosophers[i].times_eaten_mutex);
+				all_satisfied = false;
+				break;
+			}
+			pthread_mutex_unlock(&table->philosophers[i].times_eaten_mutex);
+			i++;
+		}
+		if (all_satisfied)
+		{
+			pthread_mutex_lock(&table->print_mutex);
+			table->simulation_stop = true;
+			pthread_mutex_unlock(&table->print_mutex);
+			return NULL;
+		}
+	}
+	return (NULL);
+}
+
 void *monitor_routine(void *arg)
 {
 	t_table	*table = (t_table *)arg;
@@ -111,27 +142,7 @@ void *monitor_routine(void *arg)
 			}
 			i++;
 		}
-		if (table->must_eat_count > 0)
-		{
-			bool all_satisfied = true;
-			for (i = 0; i < table->num_philosophers; i++)
-			{
-				pthread_mutex_lock(&table->philosophers[i].times_eaten_mutex);
-				if (table->philosophers[i].times_eaten < table->must_eat_count)
-				{
-					pthread_mutex_unlock(&table->philosophers[i].times_eaten_mutex);
-					all_satisfied = false;
-					break;
-				}
-				pthread_mutex_unlock(&table->philosophers[i].times_eaten_mutex);}
-			if (all_satisfied)
-			{
-				pthread_mutex_lock(&table->print_mutex);
-				table->simulation_stop = true;
-				pthread_mutex_unlock(&table->print_mutex);
-				return NULL;
-			}
-		}
+		handle_must_eaten_time(table);
 		usleep(100);
 	}
 }
