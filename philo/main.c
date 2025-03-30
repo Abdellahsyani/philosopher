@@ -6,7 +6,7 @@
 /*   By: asyani <asyani@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 12:05:26 by asyani            #+#    #+#             */
-/*   Updated: 2025/03/30 12:17:03 by asyani           ###   ########.fr       */
+/*   Updated: 2025/03/30 12:22:22 by asyani           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,32 +83,30 @@ void cleanup_table(t_table *table)
 	free(table->forks);
 }
 
-int main(int argc, char **argv)
+int	thread_fail(void)
 {
-	t_table table;
-	int i;
+	printf("Failed to create philosopher thread\n");
+	return (1);
+}
+
+int	main(int argc, char **argv)
+{
+	t_table	table;
+	int		i;
 
 	if (!init_table(&table, argc, argv))
-	{
 		return 1;
-	}
 	i = 0;
 	while (i < table.num_philosophers)
 	{
 		if (pthread_create(&table.philosopher_threads[i], NULL, 
 		     philosopher_routine, &table.philosophers[i]) != 0)
-		{
-			printf("Failed to create philosopher thread\n");
-			return 1;
-		}
+			thread_fail();
 		i++;
 	}
 	if (pthread_create(&table.monitor_thread, NULL, 
 		    monitor_routine, &table) != 0)
-	{
-		printf("Failed to create monitor thread\n");
-		return 1;
-	}
+		thread_fail();
 	i = 0;
 	while (i < table.num_philosophers)
 	{
