@@ -6,7 +6,7 @@
 /*   By: asyani <asyani@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 12:05:26 by asyani            #+#    #+#             */
-/*   Updated: 2025/03/29 15:35:40 by asyani           ###   ########.fr       */
+/*   Updated: 2025/03/29 15:40:29 by asyani           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,16 @@ int init_table(t_table *table, int argc, char **argv)
 
 	if (argc < 5 || argc > 6)
 	{
-		printf("Usage: %s number_of_philosophers time_to_die time_to_eat time_to_sleep\n");
+		printf("Usage: number_of_philosophers time_to_die time_to_eat time_to_sleep\n");
 		return 0;
 	}
 	table->num_philosophers = atoi(argv[1]);
 	table->time_to_die = atoi(argv[2]);
 	table->time_to_eat = atoi(argv[3]);
 	table->time_to_sleep = atoi(argv[4]);
-	table->must_eat_count = (argc == 6) ? atoi(argv[5]) : -1;
+	table->must_eat_count = 0;
+	if (argv[5])
+		table->must_eat_count = atoi(argv[5]);
 	if (table->num_philosophers <= 0 || table->time_to_die < 0 || 
 		table->time_to_eat < 0 || table->time_to_sleep < 0)
 	{
