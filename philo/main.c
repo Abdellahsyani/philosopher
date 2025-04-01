@@ -6,7 +6,7 @@
 /*   By: asyani <asyani@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 12:05:26 by asyani            #+#    #+#             */
-/*   Updated: 2025/03/30 13:55:46 by asyani           ###   ########.fr       */
+/*   Updated: 2025/04/01 10:58:54 by asyani           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,10 +104,9 @@ int	main(int argc, char **argv)
 	i = 0;
 	while (i < table.num_philosophers)
 	{
-		if (pthread_create(&table.philosopher_threads[i], NULL, 
+		if (pthread_create(&table.philosopher_threads[i], NULL,
 		     philosopher_routine, &table.philosophers[i]) != 0)
 			thread_fail();
-		usleep(100);
 		i++;
 	}
 	if (pthread_create(&table.monitor_thread, NULL, 

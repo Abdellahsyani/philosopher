@@ -6,7 +6,7 @@
 /*   By: asyani <asyani@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 16:33:11 by asyani            #+#    #+#             */
-/*   Updated: 2025/03/30 13:49:23 by asyani           ###   ########.fr       */
+/*   Updated: 2025/04/01 10:56:47 by asyani           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ void	*philosopher_routine(void *arg)
 
 	if (philo->id % 2 == 0)
 		precise_sleep(1);
-
 	while (1)
 	{
 		pthread_mutex_lock(&table->print_mutex);
@@ -129,7 +128,7 @@ void *monitor_routine(void *arg)
 			pthread_mutex_lock(&table->death_mutex);
 			long long last_meal = table->philosophers[i].last_meal_time;
 			pthread_mutex_unlock(&table->death_mutex);
-			if (current_time - last_meal > table->time_to_die)
+			if (current_time - last_meal >= table->time_to_die)
 			{
 				pthread_mutex_lock(&table->print_mutex);
 				if (!table->simulation_stop)
@@ -143,6 +142,6 @@ void *monitor_routine(void *arg)
 			i++;
 		}
 		handle_must_eaten_time(table);
-		usleep(100);
+		usleep(500);
 	}
 }
