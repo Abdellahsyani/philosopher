@@ -12,6 +12,33 @@
 
 #include "philosophers.h"
 
+static int	ft_atoi(char *str)
+{
+	int		i;
+	int		sign;
+	long	res;
+
+	i = 0;
+	sign = 1;
+	res = 0;
+	while ((str[i] >= 9 && str[i] <= 13) || str[i] == 32)
+		i++;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			sign = -1;
+		i++;
+	}
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		res = res * 10 + (str[i] - '0');
+		if (res >= INT_MAX)
+			exit_failure("Invalid PID\n");
+		i++;
+	}
+	return (res * sign);
+}
+
 static void	support_init(t_table *table)
 {
 	int	i;
@@ -48,12 +75,12 @@ int	init_table(t_table *table, int argc, char **argv)
 		printf("Usage of argumenets is wrong\n");
 		return (0);
 	}
-	table->num_philosophers = atoi(argv[1]);
-	table->time_to_die = atoi(argv[2]);
-	table->time_to_eat = atoi(argv[3]);
-	table->time_to_sleep = atoi(argv[4]);
+	table->num_philosophers = ft_atoi(argv[1]);
+	table->time_to_die = ft_atoi(argv[2]);
+	table->time_to_eat = ft_atoi(argv[3]);
+	table->time_to_sleep = ft_atoi(argv[4]);
 	if (argv[5])
-		table->must_eat_count = atoi(argv[5]);
+		table->must_eat_count = ft_atoi(argv[5]);
 	if (table->num_philosophers <= 0 || table->time_to_die < 0
 		|| table->time_to_eat < 0 || table->time_to_sleep < 0)
 	{
