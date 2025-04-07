@@ -33,7 +33,7 @@ static int	ft_atoi(char *str)
 	{
 		res = res * 10 + (str[i] - '0');
 		if (res >= INT_MAX)
-			exit_failure("Invalid PID\n");
+			return (1);
 		i++;
 	}
 	return (res * sign);
