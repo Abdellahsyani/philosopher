@@ -88,9 +88,9 @@ int	init_table(t_table *table, int argc, char **argv)
 		return (0);
 	}
 	table->philosophers = malloc(sizeof(t_philosopher)
-			* table->num_philosophers);
+			      * table->num_philosophers);
 	table->philosopher_threads = malloc(sizeof(pthread_t)
-			* table->num_philosophers);
+				     * table->num_philosophers);
 	table->forks = malloc(sizeof(pthread_mutex_t) * table->num_philosophers);
 	if (!table->philosophers || !table->philosopher_threads || !table->forks)
 	{
@@ -98,6 +98,13 @@ int	init_table(t_table *table, int argc, char **argv)
 		return (0);
 	}
 	support_init(table);
+	if (table->num_philosophers == 1)
+	{
+		print_status(table, 1, "has taken a fork");
+		precise_sleep(table->time_to_die);
+		printf("%lld 1 died\n", get_current_time() - table->start_time);
+		return (0);
+	}
 	return (1);
 }
 
@@ -135,12 +142,12 @@ int	main(int argc, char **argv)
 	while (i < table.num_philosophers)
 	{
 		if (pthread_create(&table.philosopher_threads[i], NULL,
-				philosopher_routine, &table.philosophers[i]) != 0)
+		     philosopher_routine, &table.philosophers[i]) != 0)
 			thread_fail();
 		i++;
 	}
 	if (pthread_create(&table.monitor_thread, NULL, monitor_routine,
-			&table) != 0)
+		    &table) != 0)
 		thread_fail();
 	i = 0;
 	while (i < table.num_philosophers)
