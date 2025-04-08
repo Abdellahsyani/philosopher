@@ -76,31 +76,24 @@ void	*philosopher_routine(void *arg)
 void	*handle_must_eaten_time(t_table *table)
 {
 	int		i;
-	bool	all_satisfied;
 
 	i = 0;
 	if (table->must_eat_count > 0)
 	{
-		all_satisfied = true;
 		while (i < table->num_philosophers)
 		{
 			pthread_mutex_lock(&table->philosophers[i].times_eaten_mutex);
 			if (table->philosophers[i].times_eaten < table->must_eat_count)
 			{
 				pthread_mutex_unlock(&table->philosophers[i].times_eaten_mutex);
-				all_satisfied = false;
-				break ;
+				return (NULL);
 			}
 			pthread_mutex_unlock(&table->philosophers[i].times_eaten_mutex);
 			i++;
 		}
-		if (all_satisfied)
-		{
-			pthread_mutex_lock(&table->print_mutex);
-			table->simulation_stop = true;
-			pthread_mutex_unlock(&table->print_mutex);
-			return (NULL);
-		}
+		pthread_mutex_lock(&table->print_mutex);
+		table->simulation_stop = true;
+		pthread_mutex_unlock(&table->print_mutex);
 	}
 	return (NULL);
 }
