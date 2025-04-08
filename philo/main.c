@@ -68,6 +68,21 @@ static void	support_init(t_table *table)
 	table->start_time = get_current_time();
 }
 
+void	allocation_fail(t_table *table)
+{
+	table->philosophers = malloc(sizeof(t_philosopher)
+			* table->num_philosophers);
+	table->philosopher_threads = malloc(sizeof(pthread_t)
+			* table->num_philosophers);
+	table->forks = malloc(sizeof(pthread_mutex_t) * table->num_philosophers);
+	if (!table->philosophers || !table->philosopher_threads || !table->forks)
+	{
+		printf("Memory allocation failed\n");
+		return ;
+	}
+	support_init(table);
+}
+
 int	init_table(t_table *table, int argc, char **argv)
 {
 	if (argc < 5 || argc > 6)
@@ -87,17 +102,7 @@ int	init_table(t_table *table, int argc, char **argv)
 		printf("Invalid input parameters\n");
 		return (0);
 	}
-	table->philosophers = malloc(sizeof(t_philosopher)
-			* table->num_philosophers);
-	table->philosopher_threads = malloc(sizeof(pthread_t)
-			* table->num_philosophers);
-	table->forks = malloc(sizeof(pthread_mutex_t) * table->num_philosophers);
-	if (!table->philosophers || !table->philosopher_threads || !table->forks)
-	{
-		printf("Memory allocation failed\n");
-		return (0);
-	}
-	support_init(table);
+	allocation_fail(table);
 	if (table->num_philosophers == 1)
 	{
 		print_status(table, 1, "has taken a fork");
