@@ -121,6 +121,13 @@ void	*monitor_routine(void *arg)
 	while (1)
 	{
 		i = 0;
+		pthread_mutex_lock(&table->print_mutex);
+		if (table->simulation_stop)
+		{
+			pthread_mutex_unlock(&table->print_mutex);
+			break ;
+		}
+		pthread_mutex_unlock(&table->print_mutex);
 		while (i < table->num_philosophers)
 		{
 			current_time = get_current_time();
@@ -137,4 +144,5 @@ void	*monitor_routine(void *arg)
 		handle_must_eaten_time(table);
 		usleep(500);
 	}
+	return (NULL);
 }
