@@ -68,7 +68,7 @@ static void	support_init(t_table *table)
 	table->start_time = get_current_time();
 }
 
-void	allocation_fail(t_table *table)
+void	allocation(t_table *table)
 {
 	table->philosophers = malloc(sizeof(t_philosopher)
 			* table->num_philosophers);
@@ -80,7 +80,14 @@ void	allocation_fail(t_table *table)
 		printf("Memory allocation failed\n");
 		return ;
 	}
-	support_init(table);
+}
+
+int	check_one_philo(t_table *table)
+{
+	print_status(table, 1, "has taken a fork");
+	precise_sleep(table->time_to_die);
+	printf("%lld 1 died\n", get_current_time() - table->start_time);
+	return (0);
 }
 
 int	init_table(t_table *table, int argc, char **argv)
@@ -102,14 +109,10 @@ int	init_table(t_table *table, int argc, char **argv)
 		printf("Invalid input parameters\n");
 		return (0);
 	}
-	allocation_fail(table);
+	allocation(table);
+	support_init(table);
 	if (table->num_philosophers == 1)
-	{
-		print_status(table, 1, "has taken a fork");
-		precise_sleep(table->time_to_die);
-		printf("%lld 1 died\n", get_current_time() - table->start_time);
-		return (0);
-	}
+		return (check_one_philo(table));
 	return (1);
 }
 
