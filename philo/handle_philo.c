@@ -63,12 +63,19 @@ void	*philosopher_routine(void *arg)
 			break ;
 		}
 		pthread_mutex_unlock(&table->print_mutex);
-		philo_eat(philo);
+		pthread_mutex_lock(&table->current_mutex);
+		table->current_turn = philo->id;
+		pthread_mutex_unlock(&table->current_mutex);
+		if (table->current_turn == philo->id)
+		{
+			philo_think(philo);
+			philo_eat(philo);
+			philo_sleep(philo);
+			table->current_turn = (table->current_turn + 1) % table->num_philosophers;
+		}
 		if (table->must_eat_count > 0
 			&& philo->times_eaten >= table->must_eat_count)
 			break ;
-		philo_sleep(philo);
-		philo_think(philo);
 	}
 	return (NULL);
 }

@@ -45,6 +45,7 @@ static void	support_init(t_table *table)
 
 	pthread_mutex_init(&table->print_mutex, NULL);
 	pthread_mutex_init(&table->death_mutex, NULL);
+	pthread_mutex_init(&table->current_mutex, NULL);
 	i = 0;
 	while (i < table->num_philosophers)
 	{
