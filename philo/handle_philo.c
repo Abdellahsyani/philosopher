@@ -64,15 +64,16 @@ void	*philosopher_routine(void *arg)
 		}
 		pthread_mutex_unlock(&table->print_mutex);
 		pthread_mutex_lock(&table->current_mutex);
-		table->current_turn = philo->id;
-		pthread_mutex_unlock(&table->current_mutex);
 		if (table->current_turn == philo->id)
 		{
+			/*printf("the philo that enter is %d\n", philo->id);*/
+			/*printf("current_turn is %d\n", table->current_turn);*/
 			philo_think(philo);
 			philo_eat(philo);
 			philo_sleep(philo);
-			table->current_turn = (table->current_turn + 1) % table->num_philosophers;
+			table->current_turn = (table->current_turn % table->num_philosophers) + 1;
 		}
+		pthread_mutex_unlock(&table->current_mutex);
 		if (table->must_eat_count > 0
 			&& philo->times_eaten >= table->must_eat_count)
 			break ;

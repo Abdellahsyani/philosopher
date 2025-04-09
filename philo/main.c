@@ -67,6 +67,7 @@ static void	support_init(t_table *table)
 	}
 	table->simulation_stop = false;
 	table->start_time = get_current_time();
+	table->current_turn = 1;
 }
 
 void	allocation(t_table *table)
