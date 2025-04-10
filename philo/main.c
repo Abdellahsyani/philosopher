@@ -84,12 +84,12 @@ void	allocation(t_table *table)
 	}
 }
 
-int	check_one_philo(t_table *table)
+void	*check_one_philo(t_table *table)
 {
 	print_status(table, 1, "has taken a fork");
 	precise_sleep(table->time_to_die);
 	printf("%lld 1 died\n", get_current_time() - table->start_time);
-	return (0);
+	return (NULL);
 }
 
 int	init_table(t_table *table, int argc, char **argv)
@@ -113,8 +113,6 @@ int	init_table(t_table *table, int argc, char **argv)
 	}
 	allocation(table);
 	support_init(table);
-	if (table->num_philosophers == 1)
-		return (check_one_philo(table));
 	return (1);
 }
 

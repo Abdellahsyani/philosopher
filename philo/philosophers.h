@@ -46,7 +46,7 @@ typedef struct s_table
 	pthread_mutex_t	death_mutex;
 	pthread_mutex_t	start_time_mutex;
 	pthread_mutex_t current_mutex;
-
+ 
 	bool			simulation_stop;
 
 	t_philosopher	*philosophers;

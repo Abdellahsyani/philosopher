@@ -56,6 +56,12 @@ void	*philosopher_routine(void *arg)
 		precise_sleep(1);
 	while (1)
 	{
+		if (table->num_philosophers == 1)
+		{
+			print_status(table, 1, "has taken a fork");
+			precise_sleep(table->time_to_die);
+			break ;
+		}
 		pthread_mutex_lock(&table->print_mutex);
 		if (table->simulation_stop)
 		{
