@@ -33,10 +33,10 @@ static int	ft_atoi(char *str)
 	{
 		res = res * 10 + (str[i] - '0');
 		if (res >= INT_MAX)
-			return (1);
+			return (0);
 		i++;
 	}
-	return (res * sign);
+	return ((int)res * sign);
 }
 
 static void	support_init(t_table *table)
@@ -67,7 +67,6 @@ static void	support_init(t_table *table)
 	}
 	table->simulation_stop = false;
 	table->start_time = get_current_time();
-	table->current_turn = 1;
 }
 
 void	allocation(t_table *table)
