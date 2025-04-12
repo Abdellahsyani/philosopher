@@ -33,10 +33,10 @@ void	take_forks(t_philosopher *philo)
 void	philo_eat(t_philosopher *philo)
 {
 	take_forks(philo);
-	print_status(philo->table, philo->id, "is eating");
 	pthread_mutex_lock(&philo->table->death_mutex);
 	philo->last_meal_time = get_current_time();
 	pthread_mutex_unlock(&philo->table->death_mutex);
+	print_status(philo->table, philo->id, "is eating");
 	pthread_mutex_lock(&philo->times_eaten_mutex);
 	philo->times_eaten++;
 	pthread_mutex_unlock(&philo->times_eaten_mutex);
@@ -52,10 +52,14 @@ void	*philosopher_routine(void *arg)
 
 	philo = (t_philosopher *)arg;
 	table = philo->table;
+	precise_sleep((philo->id % 5) * 10);
 	if (philo->id % 2 == 0)
 		precise_sleep(1);
 	while (1)
 	{
+		pthread_mutex_lock(&table->death_mutex);
+    		philo->last_meal_time = get_current_time();
+    		pthread_mutex_unlock(&table->death_mutex);
 		if (table->num_philosophers == 1)
 		{
 			print_status(table, 1, "has taken a fork");
@@ -140,7 +144,7 @@ void	*monitor_routine(void *arg)
 			pthread_mutex_lock(&table->death_mutex);
 			last_meal = table->philosophers[i].last_meal_time;
 			pthread_mutex_unlock(&table->death_mutex);
-			if (current_time - last_meal >= table->time_to_die)
+			if (current_time - last_meal >= (table->time_to_die + 10))
 			{
 				check_died(table, current_time, i);
 				return (NULL);
@@ -148,7 +152,7 @@ void	*monitor_routine(void *arg)
 			i++;
 		}
 		handle_must_eaten_time(table);
-		usleep(500);
+		usleep(100);
 	}
 	return (NULL);
 }
