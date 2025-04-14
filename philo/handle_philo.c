@@ -93,17 +93,20 @@ static void	*handle_must_eaten_time(t_table *table)
 		{
 			pthread_mutex_lock(&table->philosophers[i].times_eaten_mutex);
 			if (table->philosophers[i].times_eaten < table->must_eat_count)
-			{
+			{ 
 				pthread_mutex_unlock(&table->philosophers[i].times_eaten_mutex);
 				return (NULL);
 			}
 			pthread_mutex_unlock(&table->philosophers[i].times_eaten_mutex);
 			i++;
 		}
+		table->finish_meals = true;
 		pthread_mutex_lock(&table->print_mutex);
 		table->simulation_stop = true;
 		pthread_mutex_unlock(&table->print_mutex);
 	}
+	else
+		table->finish_meals = true;
 	return (NULL);
 }
 
@@ -143,7 +146,7 @@ void	*monitor_routine(void *arg)
 			pthread_mutex_lock(&table->death_mutex);
 			last_meal = table->philosophers[i].last_meal_time;
 			pthread_mutex_unlock(&table->death_mutex);
-			if (current_time - last_meal >= table->time_to_die)
+			if (current_time - last_meal >= table->time_to_die && table->finish_meals)
 			{
 				check_died(table, current_time, i);
 				return (NULL);

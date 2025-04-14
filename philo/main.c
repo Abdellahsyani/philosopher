@@ -66,6 +66,7 @@ static void	support_init(t_table *table)
 		i++;
 	}
 	table->simulation_stop = false;
+	table->finish_meals = false;
 	table->start_time = get_current_time();
 }
 

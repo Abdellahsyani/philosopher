@@ -48,6 +48,7 @@ typedef struct s_table
 	pthread_mutex_t current_mutex;
  
 	bool			simulation_stop;
+	bool			finish_meals;
 
 	t_philosopher	*philosophers;
 	long long		start_time;
