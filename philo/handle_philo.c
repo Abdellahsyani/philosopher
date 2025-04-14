@@ -52,7 +52,6 @@ void	*philosopher_routine(void *arg)
 
 	philo = (t_philosopher *)arg;
 	table = philo->table;
-	precise_sleep((philo->id % 5) * 10);
 	if (philo->id % 2 == 0)
 		precise_sleep(1);
 	while (1)
@@ -144,7 +143,7 @@ void	*monitor_routine(void *arg)
 			pthread_mutex_lock(&table->death_mutex);
 			last_meal = table->philosophers[i].last_meal_time;
 			pthread_mutex_unlock(&table->death_mutex);
-			if (current_time - last_meal >= (table->time_to_die + 10))
+			if (current_time - last_meal >= table->time_to_die)
 			{
 				check_died(table, current_time, i);
 				return (NULL);
