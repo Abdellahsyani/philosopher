@@ -104,7 +104,11 @@ int	init_table(t_table *table, int argc, char **argv)
 	table->time_to_eat = ft_atoi(argv[3]);
 	table->time_to_sleep = ft_atoi(argv[4]);
 	if (argv[5])
+	{
 		table->must_eat_count = ft_atoi(argv[5]);
+		if (table->must_eat_count <= 0)
+			return (0);
+	}
 	if (table->num_philosophers <= 0 || table->time_to_die < 0
 		|| table->time_to_eat < 0 || table->time_to_sleep < 0)
 	{
