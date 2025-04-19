@@ -57,8 +57,8 @@ void	*philosopher_routine(void *arg)
 	while (1)
 	{
 		pthread_mutex_lock(&table->death_mutex);
-    		philo->last_meal_time = get_current_time();
-    		pthread_mutex_unlock(&table->death_mutex);
+		philo->last_meal_time = get_current_time();
+		pthread_mutex_unlock(&table->death_mutex);
 		if (table->num_philosophers == 1)
 		{
 			print_status(table, 1, "has taken a fork");
