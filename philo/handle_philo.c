@@ -87,7 +87,7 @@ static void	*handle_must_eaten_time(t_table *table)
 	int		i;
 
 	i = 0;
-	if (table->must_eat_count > 0)
+	if (table->must_eat_count > 0 && table->num_philosophers != 1)
 	{
 		while (i < table->num_philosophers)
 		{
