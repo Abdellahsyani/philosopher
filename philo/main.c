@@ -84,14 +84,6 @@ void	allocation(t_table *table)
 	}
 }
 
-void	*check_one_philo(t_table *table)
-{
-	print_status(table, 1, "has taken a fork");
-	precise_sleep(table->time_to_die);
-	printf("%lld 1 died\n", get_current_time() - table->start_time);
-	return (NULL);
-}
-
 int	init_table(t_table *table, int argc, char **argv)
 {
 	if (argc < 5 || argc > 6)
