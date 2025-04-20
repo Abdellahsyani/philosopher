@@ -101,6 +101,8 @@ int	init_table(t_table *table, int argc, char **argv)
 		if (table->must_eat_count <= 0)
 			return (0);
 	}
+	else
+		table->must_eat_count = 0;
 	if (table->num_philosophers <= 0 || table->time_to_die < 0
 		|| table->time_to_eat < 0 || table->time_to_sleep < 0)
 	{
