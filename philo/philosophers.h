@@ -47,6 +47,7 @@ typedef struct s_table
  
 	bool			simulation_stop;
 	bool			finish_meals;
+	bool				stop_atoi;
 
 	t_philosopher	*philosophers;
 	long long		start_time;

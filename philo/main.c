@@ -12,7 +12,7 @@
 
 #include "philosophers.h"
 
-static int	ft_atoi(char *str)
+static int	ft_atoi(char *str, t_table *table)
 {
 	int		i;
 	int		sign;
@@ -32,8 +32,11 @@ static int	ft_atoi(char *str)
 	while (str[i] >= '0' && str[i] <= '9')
 	{
 		res = res * 10 + (str[i] - '0');
-		/*if (res >= INT_MAX)*/
-		/*	return (0);*/
+		if (res >= INT_MAX)
+		{
+			table->stop_atoi = true;
+			return (0);
+		}
 		i++;
 	}
 	return (res * sign);
@@ -90,18 +93,21 @@ int	init_table(t_table *table, int argc, char **argv)
 		printf("Usage of argumenets is wrong\n");
 		return (0);
 	}
-	table->num_philosophers = ft_atoi(argv[1]);
-	table->time_to_die = ft_atoi(argv[2]);
-	table->time_to_eat = ft_atoi(argv[3]);
-	table->time_to_sleep = ft_atoi(argv[4]);
+	table->stop_atoi = false;
+	table->num_philosophers = ft_atoi(argv[1], table);
+	table->time_to_die = ft_atoi(argv[2], table);
+	table->time_to_eat = ft_atoi(argv[3], table);
+	table->time_to_sleep = ft_atoi(argv[4], table);
 	if (argv[5])
 	{
-		table->must_eat_count = ft_atoi(argv[5]);
+		table->must_eat_count = ft_atoi(argv[5], table);
 		if (table->must_eat_count <= 0)
 			return (0);
 	}
 	else
 		table->must_eat_count = 0;
+	if (table->stop_atoi)
+		return (0);
 	if (table->num_philosophers <= 0 || table->time_to_die < 0
 		|| table->time_to_eat < 0 || table->time_to_sleep < 0)
 	{
