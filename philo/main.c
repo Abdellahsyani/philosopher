@@ -32,11 +32,11 @@ static int	ft_atoi(char *str)
 	while (str[i] >= '0' && str[i] <= '9')
 	{
 		res = res * 10 + (str[i] - '0');
-		if (res >= INT_MAX)
-			return (0);
+		/*if (res >= INT_MAX)*/
+		/*	return (0);*/
 		i++;
 	}
-	return ((int)res * sign);
+	return (res * sign);
 }
 
 static void	support_init(t_table *table)
@@ -45,7 +45,6 @@ static void	support_init(t_table *table)
 
 	pthread_mutex_init(&table->print_mutex, NULL);
 	pthread_mutex_init(&table->death_mutex, NULL);
-	pthread_mutex_init(&table->current_mutex, NULL);
 	i = 0;
 	while (i < table->num_philosophers)
 	{

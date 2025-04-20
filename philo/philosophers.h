@@ -39,13 +39,11 @@ typedef struct s_table
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				must_eat_count;
-	int				current_turn;
 
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print_mutex;
 	pthread_mutex_t	death_mutex;
 	pthread_mutex_t	start_time_mutex;
-	pthread_mutex_t current_mutex;
  
 	bool			simulation_stop;
 	bool			finish_meals;
