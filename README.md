@@ -56,11 +56,11 @@
 
 - ### Mutexes:
 
-    - Using mutexes to protect shared resources (forks).
+    - Using `mutexes` to protect shared resources (forks).
 
 - ### Timers:
 
-    - Using gettimeofday or equivalent to manage precise timing.
+    - Using `gettimeofday` or equivalent to manage precise timing.
 
 - ### Synchronization:
 
@@ -73,3 +73,43 @@
 - ### Death Detection:
 
     - A monitor thread or function must check regularly if any philosopher exceeds time_to_die.
+
+----
+
+## 🔗 Sample Command
+
+- ./philo 5 800 200 200
+
+    - 5 philosophers
+
+    - Die after 800ms without eating
+
+    - Eat for 200ms
+
+    - Sleep for 200ms
+
+----
+
+# 📚 Useful Functions:
+
+- `pthread_create`
+
+- `pthread_join`
+
+- `pthread_mutex_init`
+
+- `pthread_mutex_lock`
+
+- `pthread_mutex_unlock`
+
+- `gettimeofday`
+
+- `usleep`
+
+----
+
+# 🚀 Conclusion
+
+The Philosophers project teaches essential concurrency skills by simulating a classic problem that is still relevant in operating systems, parallel programming, and resource management.
+
+Focus on clean, synchronized code and precise time management to meet the mandatory requirements successfully.
