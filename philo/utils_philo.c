@@ -23,15 +23,15 @@ long long	get_current_time(void)
 void	precise_sleep(long long milliseconds, t_table *table)
 {
 	long long	start;
+	(void)table;
 
 	start = get_current_time();
 	while (get_current_time() - start < milliseconds)
 	{
-		if (table->simulation_stop)
-			break ;
 		usleep(100);
 	}
 }
+
 void	print_status(t_table *table, int philosopher_id, const char *status)
 {
 	long long	current_time;

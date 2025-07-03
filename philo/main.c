@@ -33,10 +33,7 @@ static int	ft_atoi(char *str, t_table *table)
 	{
 		res = res * 10 + (str[i] - '0');
 		if (res >= INT_MAX)
-		{
-			table->stop_atoi = true;
-			return (0);
-		}
+			return (table->stop_atoi = true, 0);
 		i++;
 	}
 	return (res * sign);
