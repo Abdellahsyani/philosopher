@@ -48,6 +48,7 @@
 2000 3 died
 ```
 
+----
 ## 🔑 Key Concepts to Implement
 
 - ### Threads:
