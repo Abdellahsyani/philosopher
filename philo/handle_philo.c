@@ -84,7 +84,7 @@ void	*philosopher_routine(void *arg)
 
 static void	*handle_must_eaten_time(t_table *table)
 {
-	int		i;
+	int	i;
 
 	i = 0;
 	if (table->must_eat_count > 0 && table->num_philosophers != 1)
@@ -93,7 +93,7 @@ static void	*handle_must_eaten_time(t_table *table)
 		{
 			pthread_mutex_lock(&table->philosophers[i].times_eaten_mutex);
 			if (table->philosophers[i].times_eaten < table->must_eat_count)
-			{ 
+			{
 				pthread_mutex_unlock(&table->philosophers[i].times_eaten_mutex);
 				return (NULL);
 			}
@@ -116,7 +116,7 @@ static void	check_died(t_table *table, long long current_time, int i)
 	if (!table->simulation_stop)
 	{
 		printf("%lld %d died\n", current_time - table->start_time,
-			table->philosophers[i].id);
+				table->philosophers[i].id);
 		table->simulation_stop = true;
 	}
 	pthread_mutex_unlock(&table->print_mutex);
@@ -146,7 +146,8 @@ void	*monitor_routine(void *arg)
 			pthread_mutex_lock(&table->death_mutex);
 			last_meal = table->philosophers[i].last_meal_time;
 			pthread_mutex_unlock(&table->death_mutex);
-			if (current_time - last_meal >= table->time_to_die && table->finish_meals)
+			if (current_time - last_meal >= table->time_to_die
+				&& table->finish_meals)
 			{
 				check_died(table, current_time, i);
 				return (NULL);

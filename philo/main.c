@@ -105,8 +105,8 @@ int	init_table(t_table *table, int argc, char **argv)
 		table->must_eat_count = 0;
 	if (table->stop_atoi)
 		return (0);
-	if (table->num_philosophers <= 0 || table->time_to_die < 0
-		|| table->time_to_eat < 0 || table->time_to_sleep < 0)
+	if (table->num_philosophers <= 0 || table->time_to_die <= 0
+		|| table->time_to_eat <= 0 || table->time_to_sleep <= 0)
 	{
 		printf("Invalid input parameters\n");
 		return (0);

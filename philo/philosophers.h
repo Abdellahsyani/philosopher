@@ -13,13 +13,13 @@
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
+# include <limits.h>
 # include <pthread.h>
 # include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/time.h>
 # include <unistd.h>
-# include <limits.h>
 
 typedef struct s_philosopher
 {
@@ -44,10 +44,10 @@ typedef struct s_table
 	pthread_mutex_t	print_mutex;
 	pthread_mutex_t	death_mutex;
 	pthread_mutex_t	start_time_mutex;
- 
+
 	bool			simulation_stop;
 	bool			finish_meals;
-	bool				stop_atoi;
+	bool			stop_atoi;
 
 	t_philosopher	*philosophers;
 	long long		start_time;
