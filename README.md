@@ -16,7 +16,7 @@
 
 - ### 2. Arguments:
 
-- number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]
+- `number_of_philosophers` `time_to_die time_to_eat` `time_to_sleep` `[number_of_times_each_philosopher_must_eat]`
 
 - `number_of_philosophers`: The number of philosophers and forks (must be > 0).
 
