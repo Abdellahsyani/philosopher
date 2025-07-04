@@ -45,6 +45,8 @@ static void	support_init(t_table *table)
 
 	pthread_mutex_init(&table->print_mutex, NULL);
 	pthread_mutex_init(&table->death_mutex, NULL);
+	pthread_mutex_init(&table->waiter, NULL);
+	table->start_time = get_current_time();
 	i = 0;
 	while (i < table->num_philosophers)
 	{
@@ -68,7 +70,6 @@ static void	support_init(t_table *table)
 	}
 	table->simulation_stop = false;
 	table->finish_meals = false;
-	table->start_time = get_current_time();
 }
 
 void	allocation(t_table *table)

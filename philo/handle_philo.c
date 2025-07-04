@@ -12,31 +12,43 @@
 
 #include "philosophers.h"
 
-void	take_forks(t_philosopher *philo)
+void take_forks(t_philosopher *philo)
 {
-	if (philo->id % 2 == 0)
-	{
-		pthread_mutex_lock(philo->right_fork);
-		print_status(philo->table, philo->id, "has taken a fork");
-		pthread_mutex_lock(philo->left_fork);
-		print_status(philo->table, philo->id, "has taken a fork");
-	}
-	else
-	{
-		pthread_mutex_lock(philo->left_fork);
-		print_status(philo->table, philo->id, "has taken a fork");
-		pthread_mutex_lock(philo->right_fork);
-		print_status(philo->table, philo->id, "has taken a fork");
-	}
+    pthread_mutex_lock(&philo->table->waiter);
+    
+    pthread_mutex_lock(philo->left_fork);
+    print_status(philo->table, philo->id, "has taken a fork");
+    pthread_mutex_lock(philo->right_fork);
+    print_status(philo->table, philo->id, "has taken a fork");
+
+    pthread_mutex_unlock(&philo->table->waiter);
 }
+
+/*void	take_forks(t_philosopher *philo)*/
+/*{*/
+/*	if (philo->id % 2 == 0)*/
+/*	{*/
+/*		pthread_mutex_lock(philo->right_fork);*/
+/*		print_status(philo->table, philo->id, "has taken a fork");*/
+/*		pthread_mutex_lock(philo->left_fork);*/
+/*		print_status(philo->table, philo->id, "has taken a fork");*/
+/*	}*/
+/*	else*/
+/*	{*/
+/*		pthread_mutex_lock(philo->left_fork);*/
+/*		print_status(philo->table, philo->id, "has taken a fork");*/
+/*		pthread_mutex_lock(philo->right_fork);*/
+/*		print_status(philo->table, philo->id, "has taken a fork");*/
+/*	}*/
+/*}*/
 
 void	philo_eat(t_philosopher *philo)
 {
 	take_forks(philo);
+	print_status(philo->table, philo->id, "is eating");
 	pthread_mutex_lock(&philo->table->death_mutex);
 	philo->last_meal_time = get_current_time();
 	pthread_mutex_unlock(&philo->table->death_mutex);
-	print_status(philo->table, philo->id, "is eating");
 	pthread_mutex_lock(&philo->times_eaten_mutex);
 	philo->times_eaten++;
 	pthread_mutex_unlock(&philo->times_eaten_mutex);
@@ -143,8 +155,7 @@ void	*monitor_routine(void *arg)
 			pthread_mutex_lock(&table->death_mutex);
 			last_meal = table->philosophers[i].last_meal_time;
 			pthread_mutex_unlock(&table->death_mutex);
-			if (current_time - last_meal >= table->time_to_die
-				&& table->finish_meals)
+			if (current_time - last_meal >= table->time_to_die)
 			{
 				check_died(table, current_time, i);
 				return (NULL);
