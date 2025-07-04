@@ -60,8 +60,10 @@ static void	support_init(t_table *table)
 		table->philosophers[i].last_meal_time = get_current_time();
 		table->philosophers[i].table = table;
 		table->philosophers[i].left_fork = &table->forks[i];
-		table->philosophers[i].right_fork = &table->forks[(i + 1)
-			% table->num_philosophers];
+		if (i == 0)
+			table->philosophers[i].right_fork = &table->forks[table->num_philosophers - 1];
+		else
+			table->philosophers[i].right_fork = &table->forks[(i - 1)];
 		i++;
 	}
 	table->simulation_stop = false;

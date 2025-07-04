@@ -63,6 +63,7 @@ void				*monitor_routine(void *arg);
 long long			get_current_time(void);
 void				precise_sleep(long long milliseconds, t_table *table);
 void				print_status(t_table *table, int philosopher_id,
+
 						const char *status);
 void				philo_sleep(t_philosopher *philo);
 void				philo_think(t_philosopher *philo);
