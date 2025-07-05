@@ -140,12 +140,39 @@ static int	thread_fail(void)
 	return (1);
 }
 
+int	ft_isalpha(int c)
+{
+	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
+		return (1);
+	return (0);
+}
+
+int	check_args(int	argc, char **argv)
+{
+	int	i;
+	int	j;
+
+	j = 0;
+	i = 1;
+	while (i < argc)
+	{
+		if (ft_isalpha(argv[i][j]))
+		{
+			printf("Error: enter just number\n");
+			return (0);
+		}
+		i++;
+		j++;
+	}
+	return (1);
+}
+
 int	main(int argc, char **argv)
 {
 	t_table	table;
 	size_t		i;
 
-	if (!init_table(&table, argc, argv))
+	if (!init_table(&table, argc, argv) || !check_args(argc, argv))
 		return (1);
 	i = 0;
 	while (i < table.num_philosophers)
@@ -157,7 +184,9 @@ int	main(int argc, char **argv)
 		table.philosophers[i].last_meal_time = table.start_time;
 		pthread_mutex_unlock(&table.death_mutex);
 		if (table.num_philosophers > 1)
-			usleep(3);
+		{
+			usleep(5);
+		}
 		i++;
 	}
 	if (pthread_create(&table.monitor_thread, NULL, monitor_routine,
