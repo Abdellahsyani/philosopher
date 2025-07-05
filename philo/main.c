@@ -139,6 +139,7 @@ void	cleanup_table(t_table *table)
 static int	thread_fail(void)
 {
 	printf("Failed to create philosopher thread\n");
+	//don't forget to destroy and free here 
 	return (1);
 }
 

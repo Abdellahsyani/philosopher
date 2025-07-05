@@ -42,7 +42,6 @@ void	print_status(t_table *table, int philosopher_id, const char *status)
 		current_time = get_current_time();
 		printf("%lld %d %s\n", current_time - table->start_time, philosopher_id,
 			status);
-		usleep(500);
 	}
 	pthread_mutex_unlock(&table->print_mutex);
 }
