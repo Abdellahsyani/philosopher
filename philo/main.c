@@ -41,7 +41,7 @@ static int	ft_atoi(char *str, t_table *table)
 
 static void	support_init(t_table *table)
 {
-	int	i;
+	size_t	i;
 
 	pthread_mutex_init(&table->print_mutex, NULL);
 	pthread_mutex_init(&table->death_mutex, NULL);
@@ -59,13 +59,10 @@ static void	support_init(t_table *table)
 	{
 		table->philosophers[i].id = i + 1;
 		table->philosophers[i].times_eaten = 0;
-		table->philosophers[i].last_meal_time = get_current_time();
+		//table->philosophers[i].last_meal_time = table->start_time;
 		table->philosophers[i].table = table;
-		table->philosophers[i].left_fork = &table->forks[i];
-		if (i == 0)
-			table->philosophers[i].right_fork = &table->forks[table->num_philosophers - 1];
-		else
-			table->philosophers[i].right_fork = &table->forks[(i - 1)];
+		table->philosophers[i].right_fork = &table->forks[i];
+		table->philosophers[i].left_fork = &table->forks[(i + 1) % table->num_philosophers];
 		i++;
 	}
 	table->simulation_stop = false;
@@ -121,7 +118,7 @@ int	init_table(t_table *table, int argc, char **argv)
 
 void	cleanup_table(t_table *table)
 {
-	int	i;
+	size_t	i;
 
 	pthread_mutex_destroy(&table->print_mutex);
 	pthread_mutex_destroy(&table->death_mutex);
@@ -146,7 +143,7 @@ static int	thread_fail(void)
 int	main(int argc, char **argv)
 {
 	t_table	table;
-	int		i;
+	size_t		i;
 
 	if (!init_table(&table, argc, argv))
 		return (1);
@@ -156,6 +153,11 @@ int	main(int argc, char **argv)
 		if (pthread_create(&table.philosopher_threads[i], NULL,
 				philosopher_routine, &table.philosophers[i]) != 0)
 			thread_fail();
+		pthread_mutex_lock(&table.death_mutex);
+		table.philosophers[i].last_meal_time = table.start_time;
+		pthread_mutex_unlock(&table.death_mutex);
+		if (table.num_philosophers > 1)
+			usleep(3);
 		i++;
 	}
 	if (pthread_create(&table.monitor_thread, NULL, monitor_routine,

@@ -23,9 +23,9 @@
 
 typedef struct s_philosopher
 {
-	int				id;
-	int				times_eaten;
-	long long		last_meal_time;
+	size_t				id;
+	size_t				times_eaten;
+	size_t		last_meal_time;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	times_eaten_mutex;
@@ -34,11 +34,11 @@ typedef struct s_philosopher
 
 typedef struct s_table
 {
-	int				num_philosophers;
-	int				time_to_die;
-	int				time_to_eat;
-	int				time_to_sleep;
-	int				must_eat_count;
+	size_t				num_philosophers;
+	size_t			time_to_die;
+	size_t			time_to_eat;
+	size_t			time_to_sleep;
+	size_t			must_eat_count;
 
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	waiter;
@@ -51,7 +51,7 @@ typedef struct s_table
 	bool			stop_atoi;
 
 	t_philosopher	*philosophers;
-	long long		start_time;
+	size_t		start_time;
 
 	pthread_t		*philosopher_threads;
 	pthread_t		monitor_thread;
@@ -61,8 +61,8 @@ int					init_table(t_table *table, int argc, char **argv);
 void				cleanup_table(t_table *table);
 void				*philosopher_routine(void *arg);
 void				*monitor_routine(void *arg);
-long long			get_current_time(void);
-void				precise_sleep(long long milliseconds, t_table *table);
+size_t			get_current_time(void);
+void				precise_sleep(size_t milliseconds, t_table *table);
 void				print_status(t_table *table, int philosopher_id,
 
 						const char *status);

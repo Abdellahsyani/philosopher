@@ -12,17 +12,22 @@
 
 #include "philosophers.h"
 
-long long	get_current_time(void)
+size_t	get_current_time(void)
 {
 	struct timeval	tv;
 
 	gettimeofday(&tv, NULL);
-	return ((tv.tv_sec * 1000LL) + (tv.tv_usec / 1000LL));
+	if (gettimeofday(&tv, NULL) == -1)
+	{
+		write(2, "gettimeofday() error\n", 22);
+		return (0);
+	}
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-void	precise_sleep(long long milliseconds, t_table *table)
+void	precise_sleep(size_t milliseconds, t_table *table)
 {
-	long long	start;
+	size_t	start;
 	(void)table;
 
 	start = get_current_time();
@@ -34,13 +39,13 @@ void	precise_sleep(long long milliseconds, t_table *table)
 
 void	print_status(t_table *table, int philosopher_id, const char *status)
 {
-	long long	current_time;
+	size_t	current_time;
 
 	pthread_mutex_lock(&table->print_mutex);
 	if (!table->simulation_stop)
 	{
 		current_time = get_current_time();
-		printf("%lld %d %s\n", current_time - table->start_time, philosopher_id,
+		printf("%ld %d %s\n", current_time - table->start_time, philosopher_id,
 			status);
 	}
 	pthread_mutex_unlock(&table->print_mutex);
