@@ -59,7 +59,6 @@ static void	support_init(t_table *table)
 	{
 		table->philosophers[i].id = i + 1;
 		table->philosophers[i].times_eaten = 0;
-		//table->philosophers[i].last_meal_time = table->start_time;
 		table->philosophers[i].table = table;
 		table->philosophers[i].right_fork = &table->forks[i];
 		table->philosophers[i].left_fork = &table->forks[(i + 1) % table->num_philosophers];
@@ -126,6 +125,7 @@ void	cleanup_table(t_table *table)
 	while (i < table->num_philosophers)
 	{
 		pthread_mutex_destroy(&table->forks[i]);
+		pthread_mutex_destroy(&table->philosophers[i].times_eaten_mutex);
 		i++;
 	}
 	free(table->philosophers);
