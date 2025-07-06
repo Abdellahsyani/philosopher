@@ -26,6 +26,7 @@ typedef struct s_philosopher
 	size_t				id;
 	size_t				times_eaten;
 	size_t		last_meal_time;
+	bool	must_eat;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	times_eaten_mutex;

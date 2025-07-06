@@ -14,20 +14,10 @@
 
 void	take_forks(t_philosopher *philo)
 {
-	if (philo->id % 2 == 0)
-	{
-		pthread_mutex_lock(philo->right_fork);
-		print_status(philo->table, philo->id, "has taken right fork");
-		pthread_mutex_lock(philo->left_fork);
-		print_status(philo->table, philo->id, "has taken left fork");
-	}
-	else
-	{
-		pthread_mutex_lock(philo->left_fork);
-		print_status(philo->table, philo->id, "has taken left fork");
-		pthread_mutex_lock(philo->right_fork);
-		print_status(philo->table, philo->id, "has taken right fork");
-	}
+	pthread_mutex_lock(philo->left_fork);
+	print_status(philo->table, philo->id, "has taken left fork");
+	pthread_mutex_lock(philo->right_fork);
+	print_status(philo->table, philo->id, "has taken right fork");
 }
 
 void	philo_eat(t_philosopher *philo)
@@ -41,16 +31,8 @@ void	philo_eat(t_philosopher *philo)
 	philo->times_eaten++;
 	pthread_mutex_unlock(&philo->times_eaten_mutex);
 	precise_sleep(philo->table->time_to_eat, philo->table);
-	if (philo->id % 2 == 0)
-	{
-		pthread_mutex_unlock(philo->right_fork);
-		pthread_mutex_unlock(philo->left_fork);
-	}
-	else
-	{
-		pthread_mutex_unlock(philo->left_fork);
-		pthread_mutex_unlock(philo->right_fork);
-	}
+	pthread_mutex_unlock(philo->left_fork);
+	pthread_mutex_unlock(philo->right_fork);
 }
 
 void	*philosopher_routine(void *arg)
@@ -111,7 +93,7 @@ static void	*handle_must_eaten_time(t_table *table)
 		pthread_mutex_unlock(&table->print_mutex);
 	}
 	else
-		table->finish_meals = true;
+		table->finish_meals = false;
 	return (NULL);
 }
 
@@ -151,11 +133,13 @@ void	*monitor_routine(void *arg)
 			pthread_mutex_lock(&table->death_mutex);
 			last_meal = table->philosophers[i].last_meal_time;
 			pthread_mutex_unlock(&table->death_mutex);
-			if (current_time - last_meal >= table->time_to_die && table->finish_meals)
+			if (current_time - last_meal >= table->time_to_die)
 			{
 				check_died(table, current_time, i);
 				return (NULL);
 			}
+			if (table->finish_meals)
+				return (NULL);
 			i++;
 		}
 		handle_must_eaten_time(table);

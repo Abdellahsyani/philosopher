@@ -60,6 +60,7 @@ static void	support_init(t_table *table)
 		table->philosophers[i].id = i + 1;
 		table->philosophers[i].times_eaten = 0;
 		table->philosophers[i].table = table;
+		table->philosophers[i].must_eat = false;
 		table->philosophers[i].right_fork = &table->forks[i];
 		table->philosophers[i].left_fork = &table->forks[(i + 1) % table->num_philosophers];
 		i++;
@@ -152,17 +153,20 @@ int	check_args(int	argc, char **argv)
 	int	i;
 	int	j;
 
-	j = 0;
 	i = 1;
 	while (i < argc)
 	{
-		if (ft_isalpha(argv[i][j]))
+		j = 0;
+		while (argv[i][j])
 		{
-			printf("Error: enter just number\n");
-			return (0);
+			if (ft_isalpha(argv[i][j]))
+			{
+				printf("Error: enter just number\n");
+				return (0);
+			}
+			j++;
 		}
 		i++;
-		j++;
 	}
 	return (1);
 }
