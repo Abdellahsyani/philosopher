@@ -176,7 +176,7 @@ int	main(int argc, char **argv)
 	t_table	table;
 	size_t		i;
 
-	if (!init_table(&table, argc, argv) || !check_args(argc, argv))
+	if (!check_args(argc, argv) || !init_table(&table, argc, argv))
 		return (1);
 	i = 0;
 	while (i < table.num_philosophers)
@@ -187,10 +187,6 @@ int	main(int argc, char **argv)
 		pthread_mutex_lock(&table.death_mutex);
 		table.philosophers[i].last_meal_time = table.start_time;
 		pthread_mutex_unlock(&table.death_mutex);
-		if (table.num_philosophers > 1)
-		{
-			usleep(5);
-		}
 		i++;
 	}
 	if (pthread_create(&table.monitor_thread, NULL, monitor_routine,

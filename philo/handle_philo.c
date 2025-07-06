@@ -14,10 +14,22 @@
 
 void	take_forks(t_philosopher *philo)
 {
-	pthread_mutex_lock(philo->left_fork);
-	print_status(philo->table, philo->id, "has taken left fork");
-	pthread_mutex_lock(philo->right_fork);
-	print_status(philo->table, philo->id, "has taken right fork");
+	/*if (philo->table->num_philosophers % 2 && philo->times_eaten > 0)*/
+	/*		precise_sleep((philo->table->time_to_die - philo->table->time_to_eat - philo->table->time_to_sleep) / 2, philo->table);*/
+	if(philo->id % 2)
+	{
+		pthread_mutex_lock(philo->left_fork);
+		print_status(philo->table, philo->id, "has taken left fork");
+		pthread_mutex_lock(philo->right_fork);
+		print_status(philo->table, philo->id, "has taken right fork");
+	}
+	else
+	{
+		pthread_mutex_lock(philo->right_fork);
+		print_status(philo->table, philo->id, "has taken right fork");
+		pthread_mutex_lock(philo->left_fork);
+		print_status(philo->table, philo->id, "has taken left fork");
+	}
 }
 
 void	philo_eat(t_philosopher *philo)
@@ -65,6 +77,7 @@ void	*philosopher_routine(void *arg)
 			&& philo->times_eaten >= table->must_eat_count)
 			break ;
 		philo_sleep(philo);
+		
 	}
 	return (NULL);
 }
@@ -143,6 +156,7 @@ void	*monitor_routine(void *arg)
 			i++;
 		}
 		handle_must_eaten_time(table);
+		usleep(100);
 	}
 	return (NULL);
 }
