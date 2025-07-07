@@ -45,7 +45,6 @@ static void	support_init(t_table *table)
 
 	pthread_mutex_init(&table->print_mutex, NULL);
 	pthread_mutex_init(&table->death_mutex, NULL);
-	pthread_mutex_init(&table->waiter, NULL);
 	table->start_time = get_current_time();
 	i = 0;
 	while (i < table->num_philosophers)
@@ -86,10 +85,7 @@ void	allocation(t_table *table)
 int	init_table(t_table *table, int argc, char **argv)
 {
 	if (argc < 5 || argc > 6)
-	{
-		printf("Usage of argumenets is wrong\n");
-		return (0);
-	}
+		return (printf("Usage of args is wrong\n"), 0);
 	table->stop_atoi = false;
 	table->num_philosophers = ft_atoi(argv[1], table);
 	table->time_to_die = ft_atoi(argv[2], table);
@@ -107,10 +103,7 @@ int	init_table(t_table *table, int argc, char **argv)
 		return (0);
 	if (table->num_philosophers <= 0 || table->time_to_die <= 0
 		|| table->time_to_eat <= 0 || table->time_to_sleep <= 0)
-	{
-		printf("Invalid input parameters\n");
-		return (0);
-	}
+		return (printf("Invalid input parameters\n"), 0);
 	allocation(table);
 	support_init(table);
 	return (1);
@@ -171,6 +164,20 @@ int	check_args(int	argc, char **argv)
 	return (1);
 }
 
+void	join_threads(t_table *table)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < table->num_philosophers)
+	{
+		pthread_join(table->philosopher_threads[i], NULL);
+		i++;
+	}
+	pthread_join(table->monitor_thread, NULL);
+	cleanup_table(table);
+}
+
 int	main(int argc, char **argv)
 {
 	t_table	table;
@@ -192,13 +199,14 @@ int	main(int argc, char **argv)
 	if (pthread_create(&table.monitor_thread, NULL, monitor_routine,
 			&table) != 0)
 		thread_fail();
-	i = 0;
-	while (i < table.num_philosophers)
-	{
-		pthread_join(table.philosopher_threads[i], NULL);
-		i++;
-	}
-	pthread_join(table.monitor_thread, NULL);
-	cleanup_table(&table);
+	join_threads(&table);
+	/*i = 0;*/
+	/*while (i < table.num_philosophers)*/
+	/*{*/
+	/*	pthread_join(table.philosopher_threads[i], NULL);*/
+	/*	i++;*/
+	/*}*/
+	/*pthread_join(table.monitor_thread, NULL);*/
+	/*cleanup_table(&table);*/
 	return (0);
 }

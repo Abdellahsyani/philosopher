@@ -172,21 +172,6 @@ void	*monitor_routine(void *arg)
 		pthread_mutex_unlock(&table->print_mutex);
 		if (start_checking(table) == 0)
 			return (NULL);
-		/*while (i < table->num_philosophers)*/
-		/*{*/
-		/*	current_time = get_current_time();*/
-		/*	pthread_mutex_lock(&table->death_mutex);*/
-		/*	last_meal = table->philosophers[i].last_meal_time;*/
-		/*	pthread_mutex_unlock(&table->death_mutex);*/
-		/*	if (current_time - last_meal >= table->time_to_die)*/
-		/*	{*/
-		/*		check_died(table, current_time, i);*/
-		/*		return (NULL);*/
-		/*	}*/
-		/*	if (table->finish_meals)*/
-		/*		return (NULL);*/
-		/*	i++;*/
-		/*}*/
 		handle_must_eaten_time(table);
 		usleep(100);
 	}

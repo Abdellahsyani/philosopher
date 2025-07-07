@@ -42,7 +42,6 @@ typedef struct s_table
 	size_t			must_eat_count;
 
 	pthread_mutex_t	*forks;
-	pthread_mutex_t	waiter;
 	pthread_mutex_t	print_mutex;
 	pthread_mutex_t	death_mutex;
 	pthread_mutex_t	start_time_mutex;
