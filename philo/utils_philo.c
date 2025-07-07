@@ -37,7 +37,7 @@ void	precise_sleep(size_t milliseconds, t_table *table)
 	}
 }
 
-void	print_status(t_table *table, int philosopher_id, const char *status)
+void	print_status(t_table *table, size_t philosopher_id, const char *status)
 {
 	size_t	current_time;
 
@@ -45,7 +45,7 @@ void	print_status(t_table *table, int philosopher_id, const char *status)
 	if (!table->simulation_stop)
 	{
 		current_time = get_current_time();
-		printf("%ld %d %s\n", current_time - table->start_time, philosopher_id,
+		printf("%zu %zu %s\n", current_time - table->start_time, philosopher_id,
 			status);
 	}
 	pthread_mutex_unlock(&table->print_mutex);
