@@ -14,8 +14,12 @@
 
 void	take_forks(t_philosopher *philo)
 {
-	/*if (philo->table->num_philosophers % 2 && philo->times_eaten > 0)*/
-	/*		precise_sleep((philo->table->time_to_die - philo->table->time_to_eat - philo->table->time_to_sleep) / 2, philo->table);*/
+	size_t	total_time;
+
+	total_time = philo->table->time_to_die
+		- philo->table->time_to_eat - philo->table->time_to_sleep;
+	if (philo->table->num_philosophers % 2 && philo->times_eaten > 0)
+			precise_sleep(total_time / 2, philo->table);
 	if(philo->id % 2)
 	{
 		pthread_mutex_lock(philo->left_fork);
@@ -43,19 +47,12 @@ void	philo_eat(t_philosopher *philo)
 	philo->times_eaten++;
 	pthread_mutex_unlock(&philo->times_eaten_mutex);
 	precise_sleep(philo->table->time_to_eat, philo->table);
-	pthread_mutex_unlock(philo->left_fork);
 	pthread_mutex_unlock(philo->right_fork);
+	pthread_mutex_unlock(philo->left_fork);
 }
 
-void	*philosopher_routine(void *arg)
+void	s_similation(t_table *table, t_philosopher *philo)
 {
-	t_philosopher	*philo;
-	t_table			*table;
-
-	philo = (t_philosopher *)arg;
-	table = philo->table;
-	if (philo->id % 2 == 0)
-		precise_sleep(1, table);
 	while (1)
 	{
 		if (table->num_philosophers == 1)
@@ -79,6 +76,18 @@ void	*philosopher_routine(void *arg)
 		philo_sleep(philo);
 		
 	}
+}
+
+void	*philosopher_routine(void *arg)
+{
+	t_philosopher	*philo;
+	t_table			*table;
+
+	philo = (t_philosopher *)arg;
+	table = philo->table;
+	if (philo->id % 2 == 0)
+		precise_sleep(1, table);
+	s_similation(table, philo);
 	return (NULL);
 }
 
@@ -122,17 +131,38 @@ static void	check_died(t_table *table, size_t current_time, int i)
 	pthread_mutex_unlock(&table->print_mutex);
 }
 
+int	start_checking(t_table *table)
+{
+	size_t	i;
+	size_t	current_time;
+	size_t	last_meal;
+
+	i = 0;
+	while (i < table->num_philosophers)
+	{
+		current_time = get_current_time();
+		pthread_mutex_lock(&table->death_mutex);
+		last_meal = table->philosophers[i].last_meal_time;
+		pthread_mutex_unlock(&table->death_mutex);
+		if (current_time - last_meal >= table->time_to_die)
+		{
+			check_died(table, current_time, i);
+			return (0);
+		}
+		if (table->finish_meals)
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 void	*monitor_routine(void *arg)
 {
 	t_table		*table;
-	size_t			i;
-	size_t	current_time;
-	size_t	last_meal;
 
 	table = (t_table *)arg;
 	while (1)
 	{
-		i = 0;
 		pthread_mutex_lock(&table->print_mutex);
 		if (table->simulation_stop)
 		{
@@ -140,21 +170,23 @@ void	*monitor_routine(void *arg)
 			break ;
 		}
 		pthread_mutex_unlock(&table->print_mutex);
-		while (i < table->num_philosophers)
-		{
-			current_time = get_current_time();
-			pthread_mutex_lock(&table->death_mutex);
-			last_meal = table->philosophers[i].last_meal_time;
-			pthread_mutex_unlock(&table->death_mutex);
-			if (current_time - last_meal >= table->time_to_die)
-			{
-				check_died(table, current_time, i);
-				return (NULL);
-			}
-			if (table->finish_meals)
-				return (NULL);
-			i++;
-		}
+		if (start_checking(table) == 0)
+			return (NULL);
+		/*while (i < table->num_philosophers)*/
+		/*{*/
+		/*	current_time = get_current_time();*/
+		/*	pthread_mutex_lock(&table->death_mutex);*/
+		/*	last_meal = table->philosophers[i].last_meal_time;*/
+		/*	pthread_mutex_unlock(&table->death_mutex);*/
+		/*	if (current_time - last_meal >= table->time_to_die)*/
+		/*	{*/
+		/*		check_died(table, current_time, i);*/
+		/*		return (NULL);*/
+		/*	}*/
+		/*	if (table->finish_meals)*/
+		/*		return (NULL);*/
+		/*	i++;*/
+		/*}*/
 		handle_must_eaten_time(table);
 		usleep(100);
 	}
