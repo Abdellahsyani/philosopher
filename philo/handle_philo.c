@@ -108,13 +108,6 @@ void	*monitor_routine(void *arg)
 	table = (t_table *)arg;
 	while (1)
 	{
-		/*pthread_mutex_lock(&table->print_mutex);*/
-		/*if (table->simulation_stop)*/
-		/*{*/
-		/*	pthread_mutex_unlock(&table->print_mutex);*/
-		/*	break ;*/
-		/*}*/
-		/*pthread_mutex_unlock(&table->print_mutex);*/
 		if (start_checking(table) == 0)
 			return (NULL);
 		handle_must_eaten_time(table);
