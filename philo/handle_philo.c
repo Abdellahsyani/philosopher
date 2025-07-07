@@ -6,52 +6,13 @@
 /*   By: asyani <asyani@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/13 16:33:11 by asyani            #+#    #+#             */
-/*   Updated: 2025/04/01 12:04:40 by asyani           ###   ########.fr       */
+/*   Updated: 2025/07/07 16:16:19 by asyani           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	take_forks(t_philosopher *philo)
-{
-	size_t	total_time;
-
-	total_time = philo->table->time_to_die
-		- philo->table->time_to_eat - philo->table->time_to_sleep;
-	if (philo->table->num_philosophers % 2 && philo->times_eaten > 0)
-			precise_sleep(total_time / 2, philo->table);
-	if(philo->id % 2)
-	{
-		pthread_mutex_lock(philo->left_fork);
-		print_status(philo->table, philo->id, "has taken left fork");
-		pthread_mutex_lock(philo->right_fork);
-		print_status(philo->table, philo->id, "has taken right fork");
-	}
-	else
-	{
-		pthread_mutex_lock(philo->right_fork);
-		print_status(philo->table, philo->id, "has taken right fork");
-		pthread_mutex_lock(philo->left_fork);
-		print_status(philo->table, philo->id, "has taken left fork");
-	}
-}
-
-void	philo_eat(t_philosopher *philo)
-{
-	take_forks(philo);
-	print_status(philo->table, philo->id, "is eating");
-	pthread_mutex_lock(&philo->table->death_mutex);
-	philo->last_meal_time = get_current_time();
-	pthread_mutex_unlock(&philo->table->death_mutex);
-	pthread_mutex_lock(&philo->times_eaten_mutex);
-	philo->times_eaten++;
-	pthread_mutex_unlock(&philo->times_eaten_mutex);
-	precise_sleep(philo->table->time_to_eat, philo->table);
-	pthread_mutex_unlock(philo->right_fork);
-	pthread_mutex_unlock(philo->left_fork);
-}
-
-void	s_similation(t_table *table, t_philosopher *philo)
+static void	s_similation(t_table *table, t_philosopher *philo)
 {
 	while (1)
 	{
@@ -74,7 +35,6 @@ void	s_similation(t_table *table, t_philosopher *philo)
 			&& philo->times_eaten >= table->must_eat_count)
 			break ;
 		philo_sleep(philo);
-		
 	}
 }
 
@@ -110,28 +70,13 @@ static void	*handle_must_eaten_time(t_table *table)
 			i++;
 		}
 		table->finish_meals = true;
-		pthread_mutex_lock(&table->print_mutex);
-		table->simulation_stop = true;
-		pthread_mutex_unlock(&table->print_mutex);
 	}
 	else
 		table->finish_meals = false;
 	return (NULL);
 }
 
-static void	check_died(t_table *table, size_t current_time, int i)
-{
-	pthread_mutex_lock(&table->print_mutex);
-	if (!table->simulation_stop)
-	{
-		printf("%zu %zu died\n", current_time - table->start_time,
-				table->philosophers[i].id);
-		table->simulation_stop = true;
-	}
-	pthread_mutex_unlock(&table->print_mutex);
-}
-
-int	start_checking(t_table *table)
+static int	start_checking(t_table *table)
 {
 	size_t	i;
 	size_t	current_time;
@@ -158,18 +103,18 @@ int	start_checking(t_table *table)
 
 void	*monitor_routine(void *arg)
 {
-	t_table		*table;
+	t_table	*table;
 
 	table = (t_table *)arg;
 	while (1)
 	{
-		pthread_mutex_lock(&table->print_mutex);
-		if (table->simulation_stop)
-		{
-			pthread_mutex_unlock(&table->print_mutex);
-			break ;
-		}
-		pthread_mutex_unlock(&table->print_mutex);
+		/*pthread_mutex_lock(&table->print_mutex);*/
+		/*if (table->simulation_stop)*/
+		/*{*/
+		/*	pthread_mutex_unlock(&table->print_mutex);*/
+		/*	break ;*/
+		/*}*/
+		/*pthread_mutex_unlock(&table->print_mutex);*/
 		if (start_checking(table) == 0)
 			return (NULL);
 		handle_must_eaten_time(table);

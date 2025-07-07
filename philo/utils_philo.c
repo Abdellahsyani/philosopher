@@ -28,8 +28,8 @@ size_t	get_current_time(void)
 void	precise_sleep(size_t milliseconds, t_table *table)
 {
 	size_t	start;
-	(void)table;
 
+	(void)table;
 	start = get_current_time();
 	while (get_current_time() - start < milliseconds)
 	{

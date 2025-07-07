@@ -6,47 +6,17 @@
 /*   By: asyani <asyani@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/29 12:05:26 by asyani            #+#    #+#             */
-/*   Updated: 2025/04/01 12:03:25 by asyani           ###   ########.fr       */
+/*   Updated: 2025/07/07 16:17:09 by asyani           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-static int	ft_atoi(char *str, t_table *table)
+static void	support_init(t_table *table, size_t i)
 {
-	int		i;
-	int		sign;
-	long	res;
-
-	i = 0;
-	sign = 1;
-	res = 0;
-	while ((str[i] >= 9 && str[i] <= 13) || str[i] == 32)
-		i++;
-	if (str[i] == '-' || str[i] == '+')
-	{
-		if (str[i] == '-')
-			sign = -1;
-		i++;
-	}
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		res = res * 10 + (str[i] - '0');
-		if (res >= INT_MAX)
-			return (table->stop_atoi = true, 0);
-		i++;
-	}
-	return (res * sign);
-}
-
-static void	support_init(t_table *table)
-{
-	size_t	i;
-
 	pthread_mutex_init(&table->print_mutex, NULL);
 	pthread_mutex_init(&table->death_mutex, NULL);
 	table->start_time = get_current_time();
-	i = 0;
 	while (i < table->num_philosophers)
 	{
 		pthread_mutex_init(&table->forks[i], NULL);
@@ -61,7 +31,8 @@ static void	support_init(t_table *table)
 		table->philosophers[i].table = table;
 		table->philosophers[i].must_eat = false;
 		table->philosophers[i].right_fork = &table->forks[i];
-		table->philosophers[i].left_fork = &table->forks[(i + 1) % table->num_philosophers];
+		table->philosophers[i].left_fork = &table->forks[(i + 1)
+			% table->num_philosophers];
 		i++;
 	}
 	table->simulation_stop = false;
@@ -105,62 +76,7 @@ int	init_table(t_table *table, int argc, char **argv)
 		|| table->time_to_eat <= 0 || table->time_to_sleep <= 0)
 		return (printf("Invalid input parameters\n"), 0);
 	allocation(table);
-	support_init(table);
-	return (1);
-}
-
-void	cleanup_table(t_table *table)
-{
-	size_t	i;
-
-	pthread_mutex_destroy(&table->print_mutex);
-	pthread_mutex_destroy(&table->death_mutex);
-	i = 0;
-	while (i < table->num_philosophers)
-	{
-		pthread_mutex_destroy(&table->forks[i]);
-		pthread_mutex_destroy(&table->philosophers[i].times_eaten_mutex);
-		i++;
-	}
-	free(table->philosophers);
-	free(table->philosopher_threads);
-	free(table->forks);
-}
-
-static int	thread_fail(void)
-{
-	printf("Failed to create philosopher thread\n");
-	//don't forget to destroy and free here 
-	return (1);
-}
-
-int	ft_isalpha(int c)
-{
-	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
-		return (1);
-	return (0);
-}
-
-int	check_args(int	argc, char **argv)
-{
-	int	i;
-	int	j;
-
-	i = 1;
-	while (i < argc)
-	{
-		j = 0;
-		while (argv[i][j])
-		{
-			if (ft_isalpha(argv[i][j]))
-			{
-				printf("Error: enter just number\n");
-				return (0);
-			}
-			j++;
-		}
-		i++;
-	}
+	support_init(table, 0);
 	return (1);
 }
 
@@ -181,7 +97,7 @@ void	join_threads(t_table *table)
 int	main(int argc, char **argv)
 {
 	t_table	table;
-	size_t		i;
+	size_t	i;
 
 	if (!check_args(argc, argv) || !init_table(&table, argc, argv))
 		return (1);
@@ -200,13 +116,5 @@ int	main(int argc, char **argv)
 			&table) != 0)
 		thread_fail();
 	join_threads(&table);
-	/*i = 0;*/
-	/*while (i < table.num_philosophers)*/
-	/*{*/
-	/*	pthread_join(table.philosopher_threads[i], NULL);*/
-	/*	i++;*/
-	/*}*/
-	/*pthread_join(table.monitor_thread, NULL);*/
-	/*cleanup_table(&table);*/
 	return (0);
 }
