@@ -66,15 +66,12 @@ int	init_table(t_table *table, int argc, char **argv)
 	{
 		table->must_eat_count = ft_atoi(argv[5], table);
 		if (table->must_eat_count <= 0)
-			return (0);
+			return (printf("Negative number are not allowed\n"), 0);
 	}
 	else
 		table->must_eat_count = 0;
 	if (table->stop_atoi)
-	{
-		printf("The limit is INT_MAX\n");
-		return (0);
-	}
+		return (printf("The limit is INT_MAX\n"), 0);
 	if (table->num_philosophers <= 0 || table->time_to_die <= 0
 		|| table->time_to_eat <= 0 || table->time_to_sleep <= 0)
 		return (printf("Negative number are not allowed\n"), 0);
@@ -100,7 +97,7 @@ void	join_threads(t_table *table)
 int	main(int argc, char **argv)
 {
 	t_table	table;
-	int	i;
+	int		i;
 
 	if (!check_args(argc, argv) || !init_table(&table, argc, argv))
 		return (1);

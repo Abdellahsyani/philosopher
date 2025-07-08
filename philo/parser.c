@@ -45,7 +45,7 @@ int	check_args(int argc, char **argv)
 int	ft_atoi(char *str, t_table *table)
 {
 	int		i;
-	int	sign;
+	int		sign;
 	long	res;
 
 	i = 0;
