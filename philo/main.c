@@ -56,7 +56,7 @@ void	allocation(t_table *table)
 int	init_table(t_table *table, int argc, char **argv)
 {
 	if (argc < 5 || argc > 6)
-		return (printf("Usage of args is wrong\n"), 0);
+		return (printf("\033[1;31mUsage of args is wrong\033[0m\n"), 0);
 	table->stop_atoi = false;
 	table->num_philosophers = ft_atoi(argv[1], table);
 	table->time_to_die = ft_atoi(argv[2], table);
@@ -66,15 +66,15 @@ int	init_table(t_table *table, int argc, char **argv)
 	{
 		table->must_eat_count = ft_atoi(argv[5], table);
 		if (table->must_eat_count <= 0)
-			return (printf("Negative number are not allowed\n"), 0);
+			return (printf("\033[1;31mError: wrong number\033[0m\n"), 0);
 	}
 	else
 		table->must_eat_count = 0;
 	if (table->stop_atoi)
-		return (printf("The limit is INT_MAX\n"), 0);
+		return (printf("\033[1;31mError: wrong number\033[0m\n"), 0);
 	if (table->num_philosophers <= 0 || table->time_to_die <= 0
 		|| table->time_to_eat <= 0 || table->time_to_sleep <= 0)
-		return (printf("Negative number are not allowed\n"), 0);
+		return (printf("\033[1;31mError: wrong number\033[0m\n"), 0);
 	allocation(table);
 	support_init(table, 0);
 	return (1);

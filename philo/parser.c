@@ -32,7 +32,7 @@ int	check_args(int argc, char **argv)
 		{
 			if (ft_isalpha(argv[i][j]))
 			{
-				printf("Error: enter just number\n");
+				printf("\033[1;31mError: enter just number\033[0m\n");
 				return (0);
 			}
 			j++;
