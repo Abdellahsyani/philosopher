@@ -53,7 +53,7 @@ void	*philosopher_routine(void *arg)
 
 static void	*handle_must_eaten_time(t_table *table)
 {
-	size_t	i;
+	int	i;
 
 	i = 0;
 	if (table->must_eat_count > 0 && table->num_philosophers != 1)
@@ -78,9 +78,9 @@ static void	*handle_must_eaten_time(t_table *table)
 
 static int	start_checking(t_table *table)
 {
-	size_t	i;
-	size_t	current_time;
-	size_t	last_meal;
+	int	i;
+	int	current_time;
+	int	last_meal;
 
 	i = 0;
 	while (i < table->num_philosophers)

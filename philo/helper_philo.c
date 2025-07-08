@@ -14,7 +14,7 @@
 
 static void	take_forks(t_philosopher *philo)
 {
-	size_t	total_time;
+	int	total_time;
 
 	total_time = philo->table->time_to_die - philo->table->time_to_eat
 		- philo->table->time_to_sleep;
@@ -51,12 +51,12 @@ void	philo_eat(t_philosopher *philo)
 	pthread_mutex_unlock(philo->left_fork);
 }
 
-void	check_died(t_table *table, size_t current_time, int i)
+void	check_died(t_table *table, int current_time, int i)
 {
 	pthread_mutex_lock(&table->print_mutex);
 	if (!table->simulation_stop)
 	{
-		printf("%zu %zu died\n", current_time - table->start_time,
+		printf("%d %d died\n", current_time - table->start_time,
 			table->philosophers[i].id);
 		table->simulation_stop = true;
 	}

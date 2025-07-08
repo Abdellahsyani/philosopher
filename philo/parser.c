@@ -45,7 +45,7 @@ int	check_args(int argc, char **argv)
 int	ft_atoi(char *str, t_table *table)
 {
 	int		i;
-	int		sign;
+	int	sign;
 	long	res;
 
 	i = 0;
@@ -71,7 +71,7 @@ int	ft_atoi(char *str, t_table *table)
 
 void	cleanup_table(t_table *table)
 {
-	size_t	i;
+	int	i;
 
 	pthread_mutex_destroy(&table->print_mutex);
 	pthread_mutex_destroy(&table->death_mutex);

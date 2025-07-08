@@ -23,9 +23,9 @@
 
 typedef struct s_philosopher
 {
-	size_t			id;
-	size_t			times_eaten;
-	size_t			last_meal_time;
+	int			id;
+	int		times_eaten;
+	int		last_meal_time;
 	bool			must_eat;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
@@ -35,11 +35,11 @@ typedef struct s_philosopher
 
 typedef struct s_table
 {
-	size_t			num_philosophers;
-	size_t			time_to_die;
-	size_t			time_to_eat;
-	size_t			time_to_sleep;
-	size_t			must_eat_count;
+	int			num_philosophers;
+	int			time_to_die;
+	int		time_to_eat;
+	int			time_to_sleep;
+	int			must_eat_count;
 
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print_mutex;
@@ -50,7 +50,7 @@ typedef struct s_table
 	bool			stop_atoi;
 
 	t_philosopher	*philosophers;
-	size_t			start_time;
+	int			start_time;
 
 	pthread_t		*philosopher_threads;
 	pthread_t		monitor_thread;
@@ -60,14 +60,14 @@ int					init_table(t_table *table, int argc, char **argv);
 void				cleanup_table(t_table *table);
 void				*philosopher_routine(void *arg);
 void				*monitor_routine(void *arg);
-size_t				get_current_time(void);
-void				precise_sleep(size_t milliseconds, t_table *table);
-void				print_status(t_table *table, size_t philosopher_id,
+int				get_current_time(void);
+void				precise_sleep(int milliseconds, t_table *table);
+void				print_status(t_table *table, int philosopher_id,
 						const char *status);
 void				philo_sleep(t_philosopher *philo);
 void				philo_think(t_philosopher *philo);
 void				philo_eat(t_philosopher *philo);
-void				check_died(t_table *table, size_t current_time, int i);
+void				check_died(t_table *table, int current_time, int i);
 int					ft_atoi(char *str, t_table *table);
 int					check_args(int argc, char **argv);
 void				cleanup_table(t_table *table);

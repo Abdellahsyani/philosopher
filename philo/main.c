@@ -12,7 +12,7 @@
 
 #include "philosophers.h"
 
-static void	support_init(t_table *table, size_t i)
+static void	support_init(t_table *table, int i)
 {
 	pthread_mutex_init(&table->print_mutex, NULL);
 	pthread_mutex_init(&table->death_mutex, NULL);
@@ -71,10 +71,13 @@ int	init_table(t_table *table, int argc, char **argv)
 	else
 		table->must_eat_count = 0;
 	if (table->stop_atoi)
+	{
+		printf("The limit is INT_MAX\n");
 		return (0);
+	}
 	if (table->num_philosophers <= 0 || table->time_to_die <= 0
 		|| table->time_to_eat <= 0 || table->time_to_sleep <= 0)
-		return (printf("Invalid input parameters\n"), 0);
+		return (printf("Negative number are not allowed\n"), 0);
 	allocation(table);
 	support_init(table, 0);
 	return (1);
@@ -82,7 +85,7 @@ int	init_table(t_table *table, int argc, char **argv)
 
 void	join_threads(t_table *table)
 {
-	size_t	i;
+	int	i;
 
 	i = 0;
 	while (i < table->num_philosophers)
@@ -97,7 +100,7 @@ void	join_threads(t_table *table)
 int	main(int argc, char **argv)
 {
 	t_table	table;
-	size_t	i;
+	int	i;
 
 	if (!check_args(argc, argv) || !init_table(&table, argc, argv))
 		return (1);
