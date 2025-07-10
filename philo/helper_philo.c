@@ -14,12 +14,8 @@
 
 static void	take_forks(t_philosopher *philo)
 {
-	int	total_time;
-
-	total_time = philo->table->time_to_die - philo->table->time_to_eat
-		- philo->table->time_to_sleep;
 	if (philo->table->num_philosophers % 2 && philo->times_eaten > 0)
-		precise_sleep(total_time / 2, philo->table);
+		precise_sleep(10, philo->table);
 	if (philo->id % 2)
 	{
 		pthread_mutex_lock(philo->left_fork);
